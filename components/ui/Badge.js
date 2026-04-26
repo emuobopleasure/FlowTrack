@@ -1,31 +1,53 @@
-/**
- * Badge component — status indicators
- *
- * Usage:
- * <Badge variant="success">Paid</Badge>
- * <Badge variant="error">Failed</Badge>
- * <Badge variant="warning">Pending</Badge>
- * <Badge variant="neutral">Active</Badge>
- */
-
-const variantClasses = {
-  success: 'badge-success',
-  error:   'badge-error',
-  warning: 'badge-warning',
-  neutral: 'badge-neutral',
+const variants = {
+  success: {
+    background: 'var(--color-success-light)',
+    color: 'var(--color-success-dark)',
+    dot: 'var(--color-success)',
+  },
+  error: {
+    background: 'var(--color-error-light)',
+    color: 'var(--color-error-dark)',
+    dot: 'var(--color-error)',
+  },
+  warning: {
+    background: 'var(--color-warning-light)',
+    color: 'var(--color-warning)',
+    dot: 'var(--color-warning)',
+  },
+  neutral: {
+    background: 'var(--color-surface-overlay)',
+    color: 'var(--color-content-secondary)',
+    dot: 'var(--color-content-tertiary)',
+  },
 }
 
 export const Badge = ({ children, variant = 'neutral' }) => {
-  const dots = {
-    success: 'bg-success',
-    error:   'bg-error',
-    warning: 'bg-warning',
-    neutral: 'bg-content-tertiary',
-  }
+  const styles = variants[variant]
 
   return (
-    <span className={variantClasses[variant]}>
-      <span className={`w-1.5 h-1.5 rounded-full ${dots[variant]}`} />
+    <span
+      style={{
+        display: 'inline-flex',
+        alignItems: 'center',
+        gap: '6px',
+        background: styles.background,
+        color: styles.color,
+        fontSize: 'var(--text-label-sm)',
+        fontWeight: '500',
+        padding: '4px 12px',
+        borderRadius: 'var(--radius-pill)',
+        fontFamily: 'var(--font-sans)',
+      }}
+    >
+      <span
+        style={{
+          width: '6px',
+          height: '6px',
+          borderRadius: '50%',
+          background: styles.dot,
+          flexShrink: 0,
+        }}
+      />
       {children}
     </span>
   )

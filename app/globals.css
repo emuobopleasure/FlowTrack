@@ -1,19 +1,15 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
 
 /* --- FONT IMPORT --- */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap');
 
-/* --- CSS CUSTOM PROPERTIES --- */
-/* These mirror the Tailwind tokens and are used for
-   values Tailwind cannot handle inline — gradients,
-   complex transitions, and dynamic values */
-:root {
+/* --- DESIGN TOKENS --- */
+@theme {
   /* Brand */
-  --color-primary:       #1B6CA8;
-  --color-primary-hover: #155a8a;
-  --color-primary-light: #E8F1FA;
+  --color-primary:         #1B6CA8;
+  --color-primary-hover:   #155a8a;
+  --color-primary-light:   #E8F1FA;
+  --color-primary-dark:    #0D3F63;
 
   /* Surfaces */
   --color-surface-base:    #F6F8FA;
@@ -25,67 +21,109 @@
   --color-content-primary:   #0F1B26;
   --color-content-secondary: #4A5568;
   --color-content-tertiary:  #8492A6;
+  --color-content-inverse:   #FFFFFF;
+  --color-content-disabled:  #C0C9D4;
 
   /* Semantic */
-  --color-success: #1A9E6F;
-  --color-error:   #D94F4F;
-  --color-warning: #E07B2A;
+  --color-success:       #1A9E6F;
+  --color-success-light: #E6F7F1;
+  --color-success-dark:  #0D6B4A;
+  --color-error:         #D94F4F;
+  --color-error-light:   #FDECEA;
+  --color-error-dark:    #A33333;
+  --color-warning:       #E07B2A;
+  --color-warning-light: #FEF3E2;
 
-  /* Spacing */
-  --space-1:  4px;
-  --space-2:  8px;
-  --space-3:  12px;
-  --space-4:  16px;
-  --space-5:  20px;
-  --space-6:  24px;
-  --space-8:  32px;
-  --space-10: 40px;
-  --space-12: 48px;
-  --space-16: 64px;
+  /* Step colours */
+  --color-step-active:    #1B6CA8;
+  --color-step-completed: #1A9E6F;
+  --color-step-upcoming:  #C0C9D4;
 
-  /* Radius */
+  /* Typography */
+  --font-sans: 'Inter', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+
+  /* Font sizes */
+  --text-display-lg: 3.5rem;
+  --text-display-md: 2.75rem;
+  --text-display-sm: 2rem;
+  --text-heading-lg: 1.5rem;
+  --text-heading-md: 1.25rem;
+  --text-heading-sm: 1rem;
+  --text-body-lg:    1.125rem;
+  --text-body-md:    1rem;
+  --text-body-sm:    0.875rem;
+  --text-label-lg:   0.875rem;
+  --text-label-md:   0.8125rem;
+  --text-label-sm:   0.75rem;
+
+  /* Spacing extras */
+  --spacing-4_5: 1.125rem;
+  --spacing-13:  3.25rem;
+  --spacing-15:  3.75rem;
+  --spacing-18:  4.5rem;
+  --spacing-22:  5.5rem;
+
+  /* Border radius */
+  --radius-xs:   4px;
   --radius-sm:   8px;
   --radius-md:   12px;
   --radius-lg:   16px;
   --radius-xl:   24px;
+  --radius-2xl:  32px;
   --radius-pill: 9999px;
 
+  /* Shadows */
+  --shadow-xs:     0 1px 2px rgba(15,27,38,0.06);
+  --shadow-sm:     0 2px 8px rgba(15,27,38,0.08);
+  --shadow-md:     0 4px 16px rgba(15,27,38,0.10);
+  --shadow-lg:     0 8px 32px rgba(15,27,38,0.12);
+  --shadow-xl:     0 16px 48px rgba(15,27,38,0.16);
+  --shadow-card:   0 2px 8px rgba(15,27,38,0.06), 0 0 0 1px rgba(15,27,38,0.04);
+  --shadow-button: 0 2px 8px rgba(27,108,168,0.25);
+
+  /* Breakpoints */
+  --breakpoint-xs:  375px;
+  --breakpoint-sm:  640px;
+  --breakpoint-md:  768px;
+  --breakpoint-lg:  1024px;
+  --breakpoint-xl:  1280px;
+  --breakpoint-2xl: 1536px;
+
   /* Motion */
-  --duration-fast:   150ms;
-  --duration-base:   250ms;
-  --duration-slow:   350ms;
-  --ease-smooth:     cubic-bezier(0.4, 0, 0.2, 1);
-  --ease-spring:     cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --duration-fast: 150ms;
+  --duration-base: 250ms;
+  --duration-slow: 350ms;
 }
 
 /* --- BASE RESET --- */
-*, *::before, *::after {
+*,
+*::before,
+*::after {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
 }
 
 html {
-  /* Prevents layout shift when scrollbar appears */
   scrollbar-gutter: stable;
   scroll-behavior: smooth;
-  /* Larger base font for better readability on mobile */
   font-size: 16px;
 }
 
 body {
-  font-family: 'Inter', system-ui, sans-serif;
-  background-color: #F6F8FA;
-  color: #0F1B26;
+  font-family: var(--font-sans);
+  background-color: var(--color-surface-base);
+  color: var(--color-content-primary);
   line-height: 1.7;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  /* Prevents horizontal scroll on mobile */
   overflow-x: hidden;
 }
 
-/* --- FOCUS STYLES --- */
-/* Visible focus rings for keyboard navigation — accessibility */
+/* --- FOCUS --- */
 :focus-visible {
   outline: 2px solid var(--color-primary);
   outline-offset: 3px;
@@ -98,185 +136,30 @@ body {
   color: var(--color-primary);
 }
 
-/* --- SCROLLBAR — subtle and minimal --- */
-::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
-}
-::-webkit-scrollbar-track {
-  background: transparent;
-}
+/* --- SCROLLBAR --- */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb {
-  background: #C0C9D4;
+  background: var(--color-content-disabled);
   border-radius: var(--radius-pill);
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #8492A6;
+  background: var(--color-content-tertiary);
 }
 
-/* --- TYPOGRAPHY UTILITIES --- */
-@layer utilities {
-  .text-balance {
-    text-wrap: balance;
-  }
-  .text-pretty {
-    text-wrap: pretty;
-  }
-}
-
-/* --- COMPONENT BASE STYLES --- */
-@layer components {
-
-  /* Page container — consistent horizontal padding */
-  .page-container {
-    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
-  }
-
-  /* Section spacing */
-  .section {
-    @apply py-12 sm:py-16 lg:py-24;
-  }
-
-  /* Card — raised surface with subtle shadow */
-  .card {
-    @apply bg-surface-raised rounded-xl shadow-card p-6;
-  }
-
-  /* Form field wrapper */
-  .field {
-    @apply flex flex-col gap-2;
-  }
-
-  /* Input base */
-  .input-base {
-    @apply w-full px-4 py-4 rounded-lg border border-surface-overlay
-           bg-surface-raised text-content-primary text-body-md
-           placeholder:text-content-tertiary
-           transition-all duration-250 ease-smooth
-           focus:outline-none focus:ring-2 focus:ring-primary/30
-           focus:border-primary
-           disabled:opacity-50 disabled:cursor-not-allowed;
-    /* Large touch target — minimum 56px height for Android 16 feel */
-    min-height: 56px;
-  }
-
-  /* Input error state */
-  .input-error {
-    @apply border-error focus:ring-error/30 focus:border-error;
-  }
-
-  /* Label base */
-  .label-base {
-    @apply text-label-lg text-content-secondary font-medium;
-  }
-
-  /* Primary button — large and adaptive */
-  .btn-primary {
-    @apply inline-flex items-center justify-center gap-3
-           bg-primary text-content-inverse font-semibold
-           text-body-md rounded-xl shadow-button
-           transition-all duration-250 ease-smooth
-           hover:bg-primary-hover hover:shadow-lg hover:-translate-y-0.5
-           active:translate-y-0 active:shadow-sm
-           disabled:opacity-50 disabled:cursor-not-allowed
-           disabled:hover:translate-y-0 disabled:hover:shadow-button
-           focus-visible:ring-2 focus-visible:ring-primary/50;
-    /* Android 16 style — tall, confident touch target */
-    min-height: 56px;
-    padding: 16px 32px;
-  }
-
-  /* Ghost button */
-  .btn-ghost {
-    @apply inline-flex items-center justify-center gap-3
-           bg-transparent text-content-secondary font-medium
-           text-body-md rounded-xl border border-surface-overlay
-           transition-all duration-250 ease-smooth
-           hover:bg-surface-overlay hover:text-content-primary
-           active:bg-surface-overlay
-           disabled:opacity-50 disabled:cursor-not-allowed;
-    min-height: 56px;
-    padding: 16px 32px;
-  }
-
-  /* Destructive button */
-  .btn-destructive {
-    @apply inline-flex items-center justify-center gap-3
-           bg-error text-content-inverse font-semibold
-           text-body-md rounded-xl
-           transition-all duration-250 ease-smooth
-           hover:bg-error-dark hover:-translate-y-0.5
-           active:translate-y-0
-           disabled:opacity-50 disabled:cursor-not-allowed;
-    min-height: 56px;
-    padding: 16px 32px;
-  }
-
-  /* Badge */
-  .badge {
-    @apply inline-flex items-center gap-1.5
-           text-label-sm font-medium rounded-pill
-           px-3 py-1;
-  }
-  .badge-success {
-    @apply badge bg-success-light text-success-dark;
-  }
-  .badge-error {
-    @apply badge bg-error-light text-error-dark;
-  }
-  .badge-warning {
-    @apply badge bg-warning-light text-warning;
-  }
-  .badge-neutral {
-    @apply badge bg-surface-overlay text-content-secondary;
-  }
-
-  /* Step indicator dot */
-  .step-dot {
-    @apply w-10 h-10 rounded-full flex items-center justify-center
-           text-label-md font-semibold transition-all duration-350 ease-spring;
-  }
-  .step-dot-active {
-    @apply step-dot bg-primary text-content-inverse shadow-button scale-110;
-  }
-  .step-dot-completed {
-    @apply step-dot bg-success text-content-inverse;
-  }
-  .step-dot-upcoming {
-    @apply step-dot bg-surface-overlay text-content-tertiary;
-  }
-
-  /* Service selection card — large tappable surface */
-  .service-card {
-    @apply relative flex flex-col gap-3 p-6 rounded-xl
-           border-2 border-surface-overlay bg-surface-raised
-           cursor-pointer transition-all duration-250 ease-smooth
-           hover:border-primary hover:bg-primary-light
-           hover:shadow-md hover:-translate-y-0.5;
-    /* Minimum touch target for Android 16 */
-    min-height: 100px;
-  }
-  .service-card-selected {
-    @apply border-primary bg-primary-light shadow-md;
-  }
-}
-
-/* --- PAGE TRANSITIONS --- */
-/* Smooth entry animation for step changes */
+/* --- ANIMATIONS --- */
 @keyframes slideInUp {
-  from {
-    opacity: 0;
-    transform: translateY(16px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
 @keyframes fadeIn {
   from { opacity: 0; }
   to   { opacity: 1; }
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
 }
 
 .animate-slide-in-up {
@@ -285,4 +168,4 @@ body {
 
 .animate-fade-in {
   animation: fadeIn var(--duration-base) var(--ease-smooth) forwards;
-}
+}   
