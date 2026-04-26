@@ -1,7 +1,8 @@
-@import "tailwindcss";
-
 /* --- FONT IMPORT --- */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap');
+
+@import "tailwindcss";
+
 
 /* --- DESIGN TOKENS --- */
 @theme {
@@ -169,3 +170,13 @@ body {
 .animate-fade-in {
   animation: fadeIn var(--duration-base) var(--ease-smooth) forwards;
 }   
+
+
+/* Responsive nav helpers */
+@media (max-width: 640px) {
+  .hidden-mobile { display: none !important; }
+  .show-mobile   { display: flex !important; }
+}
+@media (min-width: 641px) {
+  .show-mobile   { display: none !important; }
+}
