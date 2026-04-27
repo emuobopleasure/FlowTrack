@@ -1,5 +1,12 @@
 "use client"
 
+/**
+ * Input component
+ *
+ * Handles: text, email, tel, date, time, textarea, select
+ * Min height 56px on all inputs — large touch targets.
+ */
+
 export const Input = ({
   label,
   type = 'text',
@@ -10,27 +17,42 @@ export const Input = ({
   hint,
   required = false,
   disabled = false,
-  className = '',
   rows = 4,
   children,
+  className = '',
 }) => {
+  const id = label?.toLowerCase().replace(/\s+/g, '-')
+
   const baseStyle = {
     width: '100%',
-    padding: '16px',
-    minHeight: '56px',
-    borderRadius: 'var(--radius-lg)',
-    border: `1.5px solid ${error ? 'var(--color-error)' : 'var(--color-surface-overlay)'}`,
-    background: 'var(--color-surface-raised)',
-    color: 'var(--color-content-primary)',
-    fontSize: 'var(--text-body-md)',
-    fontFamily: 'var(--font-sans)',
-    transition: `all var(--duration-base) var(--ease-smooth)`,
+    minHeight: type === 'textarea' ? 'auto' : '56px',
+    padding: type === 'textarea' ? '16px' : '0 18px',
+    borderRadius: '14px',
+    border: `1.5px solid ${error ? '#EF4444' : '#E3E8F2'}`,
+    background: '#FFFFFF',
+    color: '#080F1D',
+    fontSize: '1rem',
+    fontFamily: "'Plus Jakarta Sans', sans-serif",
+    fontWeight: '400',
+    transition: 'border-color .2s ease, box-shadow .2s ease',
     outline: 'none',
     opacity: disabled ? 0.5 : 1,
     cursor: disabled ? 'not-allowed' : 'auto',
+    display: 'flex',
+    alignItems: 'center',
   }
 
-  const id = label?.toLowerCase().replace(/\s+/g, '-')
+  const handleFocus = (e) => {
+    e.target.style.borderColor = error ? '#EF4444' : '#1F56F4'
+    e.target.style.boxShadow = error
+      ? '0 0 0 3px rgba(239,68,68,.12)'
+      : '0 0 0 3px rgba(31,86,244,.12)'
+  }
+
+  const handleBlur = (e) => {
+    e.target.style.borderColor = error ? '#EF4444' : '#E3E8F2'
+    e.target.style.boxShadow = 'none'
+  }
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
@@ -38,15 +60,15 @@ export const Input = ({
         <label
           htmlFor={id}
           style={{
-            fontSize: 'var(--text-label-lg)',
-            fontWeight: '500',
-            color: 'var(--color-content-secondary)',
-            fontFamily: 'var(--font-sans)',
+            fontSize: '.875rem',
+            fontWeight: '600',
+            color: '#4B5875',
+            fontFamily: "'Plus Jakarta Sans', sans-serif",
           }}
         >
           {label}
           {required && (
-            <span style={{ color: 'var(--color-error)', marginLeft: '4px' }}>*</span>
+            <span style={{ color: '#1F56F4', marginLeft: '3px' }}>*</span>
           )}
         </label>
       )}
@@ -60,7 +82,9 @@ export const Input = ({
           disabled={disabled}
           rows={rows}
           className={className}
-          style={{ ...baseStyle, resize: 'none', minHeight: '120px' }}
+          style={{ ...baseStyle, resize: 'vertical', minHeight: '120px', padding: '16px' }}
+          onFocus={handleFocus}
+          onBlur={handleBlur}
           aria-invalid={!!error}
         />
       ) : type === 'select' ? (
@@ -70,7 +94,9 @@ export const Input = ({
           onChange={onChange}
           disabled={disabled}
           className={className}
-          style={{ ...baseStyle, cursor: 'pointer' }}
+          style={{ ...baseStyle, cursor: 'pointer', paddingRight: '40px' }}
+          onFocus={handleFocus}
+          onBlur={handleBlur}
           aria-invalid={!!error}
         >
           {children}
@@ -86,6 +112,8 @@ export const Input = ({
           required={required}
           className={className}
           style={baseStyle}
+          onFocus={handleFocus}
+          onBlur={handleBlur}
           aria-invalid={!!error}
         />
       )}
@@ -94,11 +122,12 @@ export const Input = ({
         <p
           role="alert"
           style={{
-            fontSize: 'var(--text-label-md)',
-            color: 'var(--color-error)',
+            fontSize: '.8125rem',
+            color: '#EF4444',
             display: 'flex',
             alignItems: 'center',
             gap: '6px',
+            fontFamily: "'Plus Jakarta Sans', sans-serif",
           }}
         >
           <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
@@ -109,7 +138,7 @@ export const Input = ({
       )}
 
       {hint && !error && (
-        <p style={{ fontSize: 'var(--text-label-md)', color: 'var(--color-content-tertiary)' }}>
+        <p style={{ fontSize: '.8125rem', color: '#8E9DB8', fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
           {hint}
         </p>
       )}

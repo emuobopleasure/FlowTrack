@@ -1,24 +1,15 @@
-import { Inter } from 'next/font/google'
 import './globals.css'
 
-const inter = Inter({
-  subsets: ['latin'],
-  variable: '--font-sans',
-  display: 'swap',
-})
-
 export const metadata = {
-  title: 'FlowTrack — Fashion Booking Platform',
+  title: 'FlowTrack — Nigerian Male Fashion Booking',
   description:
-    'Book a custom outfit, alteration, or styling consultation with ease.',
+    'Book custom Nigerian male outfits, alterations, and styling consultations in minutes.',
 }
 
 const RootLayout = ({ children }) => {
   return (
-    <html lang="en" className={inter.variable}>
-      <body>
-        {children}
-      </body>
+    <html lang="en">
+      <body>{children}</body>
     </html>
   )
 }

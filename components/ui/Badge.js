@@ -1,53 +1,35 @@
+/**
+ * Badge component
+ * Variants: blue | success | error | neutral
+ */
+
 const variants = {
-  success: {
-    background: 'var(--color-success-light)',
-    color: 'var(--color-success-dark)',
-    dot: 'var(--color-success)',
-  },
-  error: {
-    background: 'var(--color-error-light)',
-    color: 'var(--color-error-dark)',
-    dot: 'var(--color-error)',
-  },
-  warning: {
-    background: 'var(--color-warning-light)',
-    color: 'var(--color-warning)',
-    dot: 'var(--color-warning)',
-  },
-  neutral: {
-    background: 'var(--color-surface-overlay)',
-    color: 'var(--color-content-secondary)',
-    dot: 'var(--color-content-tertiary)',
-  },
+  blue:    { bg: '#EBF0FF', color: '#1F56F4', dot: '#1F56F4' },
+  success: { bg: '#ECFDF5', color: '#059669', dot: '#10B981' },
+  error:   { bg: '#FEF2F2', color: '#DC2626', dot: '#EF4444' },
+  neutral: { bg: '#E3E8F2', color: '#4B5875', dot: '#8E9DB8' },
 }
 
 export const Badge = ({ children, variant = 'neutral' }) => {
-  const styles = variants[variant]
-
+  const s = variants[variant]
   return (
     <span
       style={{
         display: 'inline-flex',
         alignItems: 'center',
         gap: '6px',
-        background: styles.background,
-        color: styles.color,
-        fontSize: 'var(--text-label-sm)',
+        background: s.bg,
+        color: s.color,
+        fontSize: '.6875rem',
         fontWeight: '500',
-        padding: '4px 12px',
-        borderRadius: 'var(--radius-pill)',
-        fontFamily: 'var(--font-sans)',
+        padding: '5px 12px',
+        borderRadius: '9999px',
+        fontFamily: "'DM Mono', monospace",
+        letterSpacing: '.06em',
+        textTransform: 'uppercase',
       }}
     >
-      <span
-        style={{
-          width: '6px',
-          height: '6px',
-          borderRadius: '50%',
-          background: styles.dot,
-          flexShrink: 0,
-        }}
-      />
+      <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: s.dot, flexShrink: 0 }} />
       {children}
     </span>
   )
