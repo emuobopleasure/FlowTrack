@@ -1,106 +1,55 @@
-"use client"
+"use client";
 
-/**
- * Input component
- *
- * Handles: text, email, tel, date, time, textarea, select
- * Min height 56px on all inputs — large touch targets.
- */
+/* ============================================================
+   Input — Reusable form input component
+   Handles: text, email, tel, date, textarea
+   Shows label, error message, and help text.
+   ============================================================ */
 
-export const Input = ({
+export default function Input({
   label,
-  type = 'text',
-  placeholder,
+  id,
+  type = "text",
+  placeholder = "",
   value,
   onChange,
-  error,
-  hint,
   required = false,
-  disabled = false,
-  rows = 4,
-  children,
-  className = '',
-}) => {
-  const id = label?.toLowerCase().replace(/\s+/g, '-')
-
-  const baseStyle = {
-    width: '100%',
-    minHeight: type === 'textarea' ? 'auto' : '56px',
-    padding: type === 'textarea' ? '16px' : '0 18px',
-    borderRadius: '14px',
-    border: `1.5px solid ${error ? '#EF4444' : '#E3E8F2'}`,
-    background: '#FFFFFF',
-    color: '#080F1D',
-    fontSize: '1rem',
-    fontFamily: "'Plus Jakarta Sans', sans-serif",
-    fontWeight: '400',
-    transition: 'border-color .2s ease, box-shadow .2s ease',
-    outline: 'none',
-    opacity: disabled ? 0.5 : 1,
-    cursor: disabled ? 'not-allowed' : 'auto',
-    display: 'flex',
-    alignItems: 'center',
-  }
-
-  const handleFocus = (e) => {
-    e.target.style.borderColor = error ? '#EF4444' : '#1F56F4'
-    e.target.style.boxShadow = error
-      ? '0 0 0 3px rgba(239,68,68,.12)'
-      : '0 0 0 3px rgba(31,86,244,.12)'
-  }
-
-  const handleBlur = (e) => {
-    e.target.style.borderColor = error ? '#EF4444' : '#E3E8F2'
-    e.target.style.boxShadow = 'none'
-  }
+  error = "",
+  helpText = "",
+  rows,       // only for textarea
+  className = "",
+  ...props
+}) {
+  const baseClass = [
+    "w-full px-4 py-3.5 rounded-xl border text-text-primary text-base",
+    "placeholder:text-text-muted bg-white",
+    "transition-all duration-200",
+    "focus:outline-none focus:ring-2 focus:ring-navy/40 focus:border-navy",
+    error
+      ? "border-error bg-error/5"
+      : "border-border-light hover:border-border",
+    className,
+  ].join(" ");
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+    <div className="flex flex-col gap-1.5">
       {label && (
-        <label
-          htmlFor={id}
-          style={{
-            fontSize: '.875rem',
-            fontWeight: '600',
-            color: '#4B5875',
-            fontFamily: "'Plus Jakarta Sans', sans-serif",
-          }}
-        >
+        <label htmlFor={id} className="text-sm font-semibold text-text-primary">
           {label}
-          {required && (
-            <span style={{ color: '#1F56F4', marginLeft: '3px' }}>*</span>
-          )}
+          {required && <span className="text-error ml-1" aria-hidden="true">*</span>}
         </label>
       )}
 
-      {type === 'textarea' ? (
+      {type === "textarea" ? (
         <textarea
           id={id}
           value={value}
           onChange={onChange}
           placeholder={placeholder}
-          disabled={disabled}
-          rows={rows}
-          className={className}
-          style={{ ...baseStyle, resize: 'vertical', minHeight: '120px', padding: '16px' }}
-          onFocus={handleFocus}
-          onBlur={handleBlur}
-          aria-invalid={!!error}
+          rows={rows || 4}
+          className={baseClass + " resize-none"}
+          {...props}
         />
-      ) : type === 'select' ? (
-        <select
-          id={id}
-          value={value}
-          onChange={onChange}
-          disabled={disabled}
-          className={className}
-          style={{ ...baseStyle, cursor: 'pointer', paddingRight: '40px' }}
-          onFocus={handleFocus}
-          onBlur={handleBlur}
-          aria-invalid={!!error}
-        >
-          {children}
-        </select>
       ) : (
         <input
           id={id}
@@ -108,40 +57,18 @@ export const Input = ({
           value={value}
           onChange={onChange}
           placeholder={placeholder}
-          disabled={disabled}
           required={required}
-          className={className}
-          style={baseStyle}
-          onFocus={handleFocus}
-          onBlur={handleBlur}
-          aria-invalid={!!error}
+          className={baseClass}
+          {...props}
         />
       )}
 
       {error && (
-        <p
-          role="alert"
-          style={{
-            fontSize: '.8125rem',
-            color: '#EF4444',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '6px',
-            fontFamily: "'Plus Jakarta Sans', sans-serif",
-          }}
-        >
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/>
-          </svg>
-          {error}
-        </p>
+        <span className="text-xs text-error font-medium" role="alert">{error}</span>
       )}
-
-      {hint && !error && (
-        <p style={{ fontSize: '.8125rem', color: '#8E9DB8', fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
-          {hint}
-        </p>
+      {helpText && !error && (
+        <span className="text-xs text-text-muted">{helpText}</span>
       )}
     </div>
-  )
+  );
 }

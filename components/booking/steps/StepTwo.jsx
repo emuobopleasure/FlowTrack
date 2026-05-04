@@ -1,0 +1,151 @@
+"use client"
+
+/**
+ * StepTwo — Date, Time, and Measurement Method
+ *
+ * Captures:
+ * - appointmentDate
+ * - appointmentTime
+ * - measurementType: "physical" | "self"
+ */
+
+const times = [
+  "9:00 AM", "10:00 AM", "11:00 AM",
+  "12:00 PM", "2:00 PM", "3:00 PM", "4:00 PM",
+]
+
+const measurementOptions = [
+  {
+    id: "physical",
+    name: "Come in for fitting",
+    desc: "Visit the studio on your appointment day",
+    icon: (
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/>
+        <circle cx="9" cy="7" r="4"/>
+      </svg>
+    ),
+  },
+  {
+    id: "self",
+    name: "Submit measurements remotely",
+    desc: "Fill in your measurements — no visit required",
+    icon: (
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/>
+      </svg>
+    ),
+  },
+]
+
+const CheckIcon = () => (
+  <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3" strokeLinecap="round" aria-hidden="true">
+    <polyline points="20 6 9 17 4 12"/>
+  </svg>
+)
+
+// Today's date in YYYY-MM-DD for the min date attribute
+const today = new Date().toISOString().split("T")[0]
+
+export default function StepTwo({ formData, updateFormData, nextStep, prevStep }) {
+  const selected = formData.measurementType || "physical"
+
+  return (
+    <div className="booking-card">
+      {/* Header */}
+      <div style={{ marginBottom: "28px" }}>
+        <div className="step-eyebrow">Step 2 of 7</div>
+        <div className="step-title">Date and appointment</div>
+        <div className="step-sub">
+          Choose when you would like your appointment and how you prefer to handle measurements.
+        </div>
+      </div>
+
+      {/* Date and time */}
+      <div className="field-row-2" style={{ marginBottom: "20px" }}>
+        <div className="booking-field">
+          <label htmlFor="appt-date">Preferred date</label>
+          <input
+            id="appt-date"
+            type="date"
+            min={today}
+            value={formData.appointmentDate || ""}
+            onChange={(e) => updateFormData({ appointmentDate: e.target.value })}
+          />
+        </div>
+        <div className="booking-field">
+          <label htmlFor="appt-time">Preferred time</label>
+          <select
+            id="appt-time"
+            value={formData.appointmentTime || ""}
+            onChange={(e) => updateFormData({ appointmentTime: e.target.value })}
+          >
+            <option value="">Select a time</option>
+            {times.map((t) => (
+              <option key={t} value={t}>{t}</option>
+            ))}
+          </select>
+        </div>
+      </div>
+
+      {/* Measurement method */}
+      <div className="booking-field">
+        <label>Measurement method</label>
+        <div style={{ display: "flex", flexDirection: "column", gap: "10px", marginTop: "8px" }}>
+          {measurementOptions.map((opt) => {
+            const isSelected = selected === opt.id
+            return (
+              <div
+                key={opt.id}
+                role="radio"
+                aria-checked={isSelected}
+                tabIndex={0}
+                className={`option-card ${isSelected ? "selected" : ""}`}
+                onClick={() => updateFormData({ measurementType: opt.id })}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault()
+                    updateFormData({ measurementType: opt.id })
+                  }
+                }}
+              >
+                <div className="option-icon">{opt.icon}</div>
+                <div style={{ flex: 1 }}>
+                  <div style={{ fontSize: ".9375rem", fontWeight: "600", color: "#0D1B2A", marginBottom: "2px" }}>
+                    {opt.name}
+                  </div>
+                  <div style={{ fontSize: ".8rem", color: "#64748B" }}>
+                    {opt.desc}
+                  </div>
+                </div>
+                <div className="option-card-check">
+                  {isSelected && <CheckIcon />}
+                </div>
+              </div>
+            )
+          })}
+        </div>
+      </div>
+
+      {/* Actions */}
+      <div className="step-actions">
+        <button className="btn-back" onClick={prevStep} aria-label="Go back to service selection">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" aria-hidden="true">
+            <path d="M19 12H5M12 5l-7 7 7 7"/>
+          </svg>
+          Back
+        </button>
+        <button
+          className="btn-continue"
+          onClick={nextStep}
+          aria-label="Continue to outfit style selection"
+        >
+          Continue
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" aria-hidden="true">
+            <path d="M5 12h14M12 5l7 7-7 7"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  )
+}

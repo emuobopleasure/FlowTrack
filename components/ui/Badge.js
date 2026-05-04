@@ -1,36 +1,35 @@
-/**
- * Badge component
- * Variants: blue | success | error | neutral
- */
+/* ============================================================
+   Badge — Status Indicator
+   Server Component — no interactivity needed, renders as HTML.
+   Used for: payment status, booking status, service type labels.
+
+   Variants: default | success | error | warning | outline
+   ============================================================ */
 
 const variants = {
-  blue:    { bg: '#EBF0FF', color: '#1F56F4', dot: '#1F56F4' },
-  success: { bg: '#ECFDF5', color: '#059669', dot: '#10B981' },
-  error:   { bg: '#FEF2F2', color: '#DC2626', dot: '#EF4444' },
-  neutral: { bg: '#E3E8F2', color: '#4B5875', dot: '#8E9DB8' },
-}
+  default:  "bg-navy/10 text-navy",
+  success:  "bg-success/10 text-success",
+  error:    "bg-error/10 text-error",
+  warning:  "bg-warning/10 text-warning",
+  outline:  "border border-border text-text-secondary bg-transparent",
+};
 
-export const Badge = ({ children, variant = 'neutral' }) => {
-  const s = variants[variant]
+export default function Badge({
+  children,
+  variant = "default",
+  className = "",
+}) {
   return (
     <span
-      style={{
-        display: 'inline-flex',
-        alignItems: 'center',
-        gap: '6px',
-        background: s.bg,
-        color: s.color,
-        fontSize: '.6875rem',
-        fontWeight: '500',
-        padding: '5px 12px',
-        borderRadius: '9999px',
-        fontFamily: "'DM Mono', monospace",
-        letterSpacing: '.06em',
-        textTransform: 'uppercase',
-      }}
+      className={[
+        "inline-flex items-center gap-1.5",
+        "px-3 py-1 rounded-full",
+        "text-xs font-semibold tracking-wide uppercase",
+        variants[variant],
+        className,
+      ].join(" ")}
     >
-      <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: s.dot, flexShrink: 0 }} />
       {children}
     </span>
-  )
+  );
 }
