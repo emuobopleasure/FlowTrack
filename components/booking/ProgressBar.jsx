@@ -19,19 +19,18 @@ const CheckIcon = () => (
 export default function ProgressBar({ currentStep }) {
   return (
     <div className="progress-bar-wrap" role="navigation" aria-label="Booking progress">
-      {/* Dots and lines */}
       <div className="progress-track">
         {STEPS.map((label, i) => {
           const stepNum = i + 1
           const isDone = stepNum < currentStep
           const isActive = stepNum === currentStep
-          const isUpcoming = stepNum > currentStep
           const isLast = stepNum === STEPS.length
 
           return (
             <div
               key={label}
-              style={{ display: "flex", alignItems: "center", flex: isLast ? "0 0 auto" : 1 }}
+              className="flex items-center"
+              style={{ flex: isLast ? "0 0 auto" : 1 }}
             >
               <div
                 className={`p-dot ${isDone ? "done" : isActive ? "active" : "upcoming"}`}
@@ -39,16 +38,17 @@ export default function ProgressBar({ currentStep }) {
               >
                 {isDone ? <CheckIcon /> : stepNum}
               </div>
-
               {!isLast && (
-                <div className={`p-line ${isDone ? "done" : "upcoming"}`} aria-hidden="true" />
+                <div
+                  className={`p-line ${isDone ? "done" : "upcoming"}`}
+                  aria-hidden="true"
+                />
               )}
             </div>
           )
         })}
       </div>
 
-      {/* Labels */}
       <div className="p-labels" aria-hidden="true">
         {STEPS.map((label, i) => {
           const stepNum = i + 1

@@ -1,18 +1,5 @@
 "use client"
 
-/**
- * StepFive — Email Gate (Save Progress)
- *
- * Progressive commitment pattern:
- * User has already invested time in steps 1–4.
- * Email is requested here — framed as saving progress,
- * not as registration.
- *
- * On submit:
- * - Creates/updates session in MongoDB with email as identifier
- * - From this point, email is the persistent key
- */
-
 import { useState } from "react"
 
 export default function StepFive({
@@ -27,27 +14,17 @@ export default function StepFive({
 }) {
   const [localError, setLocalError] = useState("")
 
-  const validateEmail = (email) => {
-    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
-  }
+  const validateEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
 
   const handleContinue = async () => {
     const email = formData.email?.trim()
-
-    if (!email) {
-      setLocalError("Please enter your email address.")
-      return
-    }
-    if (!validateEmail(email)) {
-      setLocalError("Please enter a valid email address.")
-      return
-    }
+    if (!email) { setLocalError("Please enter your email address."); return }
+    if (!validateEmail(email)) { setLocalError("Please enter a valid email address."); return }
 
     setLocalError("")
     setIsSubmitting(true)
 
     try {
-      // Link anonymous session to email in MongoDB
       const res = await fetch("/api/session", {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
@@ -58,10 +35,9 @@ export default function StepFive({
           formData,
         }),
       })
-
       if (!res.ok) throw new Error("Failed to save progress")
       nextStep()
-    } catch (err) {
+    } catch {
       setError("Something went wrong saving your progress. Please try again.")
     } finally {
       setIsSubmitting(false)
@@ -70,17 +46,16 @@ export default function StepFive({
 
   return (
     <div className="booking-card">
-      {/* Header */}
-      <div style={{ marginBottom: "28px" }}>
+
+      <div className="mb-7">
         <div className="step-eyebrow">Step 5 of 7</div>
-        <div className="step-title">Save your progress</div>
-        <div className="step-sub">
+        <h2 className="step-title">Save your progress</h2>
+        <p className="step-sub">
           Enter your email to save your booking and receive your confirmation. No account or password needed.
-        </div>
+        </p>
       </div>
 
-      {/* Email field */}
-      <div className="booking-field" style={{ marginBottom: "16px" }}>
+      <div className="booking-field mb-4">
         <label htmlFor="email">Email address</label>
         <input
           id="email"
@@ -94,37 +69,29 @@ export default function StepFive({
           onKeyDown={(e) => { if (e.key === "Enter") handleContinue() }}
           aria-describedby={localError ? "email-error" : undefined}
           aria-invalid={!!localError}
-          style={{
-            borderColor: localError ? "#DC2626" : undefined,
-          }}
+          className={localError ? "border-error!" : ""}
         />
         {localError && (
           <span
             id="email-error"
             role="alert"
-            style={{ fontSize: ".8125rem", color: "#DC2626", marginTop: "4px" }}
+            className="text-[.8125rem] text-error mt-1"
           >
             {localError}
           </span>
         )}
       </div>
 
-      {/* Reassurance box */}
       <div className="info-box blue">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" style={{ flexShrink: 0, marginTop: "1px" }} aria-hidden="true">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" className="shrink-0 mt-0.5" aria-hidden="true">
           <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
         </svg>
         <div>
-          <div style={{ fontWeight: "600", marginBottom: "4px" }}>
-            Your progress is protected
-          </div>
-          <div>
-            We only use your email to save your booking and send your confirmation code. No marketing, no spam.
-          </div>
+          <p className="font-semibold mb-1">Your progress is protected</p>
+          <p>We only use your email to save your booking and send your confirmation code. No marketing, no spam.</p>
         </div>
       </div>
 
-      {/* Actions */}
       <div className="step-actions">
         <button className="btn-back" onClick={prevStep} aria-label="Go back to measurements">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" aria-hidden="true">
@@ -136,7 +103,7 @@ export default function StepFive({
           className="btn-continue"
           onClick={handleContinue}
           disabled={isSubmitting}
-          aria-label="Save progress and continue to your details"
+          aria-label="Save progress and continue"
         >
           {isSubmitting ? "Saving..." : "Save and continue"}
           {!isSubmitting && (

@@ -1,7 +1,6 @@
 "use client"
 
 import { useState } from "react"
-import Link from "next/link"
 import ProgressBar from "./ProgressBar"
 import ExitModal from "./ExitModal"
 
@@ -10,42 +9,12 @@ export default function BookingLayout({ currentStep, children }) {
 
   return (
     <>
-      {/* Exit modal */}
       <ExitModal isOpen={exitOpen} onClose={() => setExitOpen(false)} />
 
-      {/* Progress bar — sits below the fixed navbar */}
       <ProgressBar currentStep={currentStep} />
 
-      {/* Page body */}
-      <div
-        style={{
-          paddingTop: "140px",
-          paddingBottom: "48px",
-          minHeight: "100vh",
-          display: "flex",
-          alignItems: "flex-start",
-          justifyContent: "center",
-          background: "#F5F5F0",
-        }}
-      >
-        <div style={{ width: "100%", maxWidth: "680px", padding: "0 20px" }}>
-          {children}
-        </div>
-      </div>
-
-      {/* Exit button — injected into the navbar via a portal-like pattern.
-          We add it as a fixed element that aligns with the navbar. */}
-      <div
-        style={{
-          position: "fixed",
-          top: 0,
-          right: "40px",
-          height: "64px",
-          display: "flex",
-          alignItems: "center",
-          zIndex: 101,
-        }}
-      >
+      {/* Exit button — overlaid on the fixed navbar */}
+      <div className="fixed top-0 right-6 md:right-10 h-16 flex items-center z-[101]">
         <button
           className="exit-booking-btn"
           onClick={() => setExitOpen(true)}
@@ -57,6 +26,13 @@ export default function BookingLayout({ currentStep, children }) {
           </svg>
           Exit booking
         </button>
+      </div>
+
+      {/* Page body */}
+      <div className="min-h-screen bg-off-white pt-[140px] pb-12 flex items-start justify-center px-5">
+        <div className="w-full max-w-[680px]">
+          {children}
+        </div>
       </div>
     </>
   )

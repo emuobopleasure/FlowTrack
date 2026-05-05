@@ -1,21 +1,12 @@
 "use client"
 
-/**
- * StepOne — Service Selection
- *
- * Three services available. Custom Outfit is pre-selected
- * and visually dominant based on real booking data —
- * 100% of bookings are for custom outfits.
- *
- * User can still switch to Alteration or Consultation.
- */
-
 const services = [
   {
     id: "custom_outfit",
     name: "Custom Outfit",
     desc: "Original piece built to your measurements — agbada, senator, kaftan and more",
     badge: "Most booked",
+    featured: true,
     icon: (
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
         <path d="M20.38 3.46L16 2a4 4 0 01-8 0L3.62 3.46a2 2 0 00-1.34 2.23l.58 3.57a1 1 0 00.99.84H6v10c0 1.1.9 2 2 2h8a2 2 0 002-2V10h2.15a1 1 0 00.99-.84l.58-3.57a2 2 0 00-1.34-2.23z"/>
@@ -27,6 +18,7 @@ const services = [
     name: "Alteration",
     desc: "Expert adjustments to an existing garment — resizing, hemming, restructuring",
     badge: null,
+    featured: false,
     icon: (
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
         <circle cx="12" cy="12" r="10"/>
@@ -40,6 +32,7 @@ const services = [
     name: "Styling Consultation",
     desc: "60-minute session to plan your style, wardrobe, or event outfits",
     badge: null,
+    featured: false,
     icon: (
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
         <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/>
@@ -57,26 +50,20 @@ const CheckIcon = () => (
 )
 
 export default function StepOne({ formData, updateFormData, nextStep }) {
-  // Default to custom_outfit if nothing selected yet
   const selected = formData.service || "custom_outfit"
-
-  const handleSelect = (id) => {
-    updateFormData({ service: id })
-  }
 
   return (
     <div className="booking-card">
-      {/* Header */}
-      <div style={{ marginBottom: "28px" }}>
+
+      <div className="mb-7">
         <div className="step-eyebrow">Step 1 of 7</div>
-        <div className="step-title">What do you need?</div>
-        <div className="step-sub">
+        <h2 className="step-title">What do you need?</h2>
+        <p className="step-sub">
           Choose the service that fits your situation. You can update this anytime before paying.
-        </div>
+        </p>
       </div>
 
-      {/* Service options */}
-      <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+      <div className="flex flex-col gap-3" role="radiogroup" aria-label="Service selection">
         {services.map((svc) => {
           const isSelected = selected === svc.id
           return (
@@ -85,58 +72,31 @@ export default function StepOne({ formData, updateFormData, nextStep }) {
               role="radio"
               aria-checked={isSelected}
               tabIndex={0}
-              className={`option-card ${isSelected ? "selected" : ""}`}
-              onClick={() => handleSelect(svc.id)}
+              className={`option-card ${isSelected ? "selected" : ""} ${svc.featured ? "py-5" : "py-3.5"}`}
+              onClick={() => updateFormData({ service: svc.id })}
               onKeyDown={(e) => {
                 if (e.key === "Enter" || e.key === " ") {
                   e.preventDefault()
-                  handleSelect(svc.id)
+                  updateFormData({ service: svc.id })
                 }
               }}
-              style={{
-                // Custom outfit card is larger and more prominent
-                padding: svc.id === "custom_outfit" ? "20px 18px" : "14px 18px",
-              }}
             >
-              <div className="option-icon">
-                {svc.icon}
-              </div>
+              <div className="option-icon">{svc.icon}</div>
 
-              <div style={{ flex: 1 }}>
-                <div style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "8px",
-                  marginBottom: "3px",
-                }}>
-                  <span style={{
-                    fontSize: svc.id === "custom_outfit" ? "1rem" : ".9375rem",
-                    fontWeight: "600",
-                    color: "#0D1B2A",
-                  }}>
+              <div className="flex-1">
+                <div className="flex items-center gap-2 mb-0.5">
+                  <span className={`font-semibold text-text-primary ${svc.featured ? "text-base" : "text-[.9375rem]"}`}>
                     {svc.name}
                   </span>
                   {svc.badge && (
-                    <span style={{
-                      fontSize: ".65rem",
-                      fontWeight: "600",
-                      padding: "2px 8px",
-                      borderRadius: "9999px",
-                      background: "#1B3A6B",
-                      color: "#fff",
-                      letterSpacing: ".04em",
-                    }}>
+                    <span className="text-[.65rem] font-semibold px-2 py-0.5 rounded-full bg-navy text-white tracking-[.04em]">
                       {svc.badge}
                     </span>
                   )}
                 </div>
-                <div style={{
-                  fontSize: ".8125rem",
-                  color: "#64748B",
-                  lineHeight: "1.5",
-                }}>
+                <p className="text-[.8125rem] text-text-secondary leading-snug">
                   {svc.desc}
-                </div>
+                </p>
               </div>
 
               <div className="option-card-check">
@@ -147,7 +107,6 @@ export default function StepOne({ formData, updateFormData, nextStep }) {
         })}
       </div>
 
-      {/* Actions */}
       <div className="step-actions">
         <div />
         <button

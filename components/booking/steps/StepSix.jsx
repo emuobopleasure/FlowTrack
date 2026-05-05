@@ -1,26 +1,18 @@
 "use client"
 
-/**
- * StepSix — Personal Details
- *
- * Captures name, phone, and special requests.
- * Email is already collected in StepFive.
- */
-
 export default function StepSix({ formData, updateFormData, nextStep, prevStep }) {
+  const canContinue = formData.name?.trim() && formData.phone?.trim()
+
   return (
     <div className="booking-card">
-      {/* Header */}
-      <div style={{ marginBottom: "28px" }}>
+
+      <div className="mb-7">
         <div className="step-eyebrow">Step 6 of 7</div>
-        <div className="step-title">Your details</div>
-        <div className="step-sub">
-          Almost there. A few more details to complete your booking.
-        </div>
+        <h2 className="step-title">Your details</h2>
+        <p className="step-sub">Almost there. A few more details to complete your booking.</p>
       </div>
 
-      {/* Name and phone */}
-      <div className="field-row-2" style={{ marginBottom: "16px" }}>
+      <div className="field-row-2 mb-4">
         <div className="booking-field">
           <label htmlFor="full-name">Full name</label>
           <input
@@ -45,7 +37,6 @@ export default function StepSix({ formData, updateFormData, nextStep, prevStep }
         </div>
       </div>
 
-      {/* Special requests */}
       <div className="booking-field">
         <label htmlFor="requests">Special requests (optional)</label>
         <textarea
@@ -57,7 +48,6 @@ export default function StepSix({ formData, updateFormData, nextStep, prevStep }
         />
       </div>
 
-      {/* Actions */}
       <div className="step-actions">
         <button className="btn-back" onClick={prevStep} aria-label="Go back to save progress">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" aria-hidden="true">
@@ -68,7 +58,7 @@ export default function StepSix({ formData, updateFormData, nextStep, prevStep }
         <button
           className="btn-continue"
           onClick={nextStep}
-          disabled={!formData.name?.trim() || !formData.phone?.trim()}
+          disabled={!canContinue}
           aria-label="Review your booking"
         >
           Review booking

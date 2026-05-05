@@ -1,17 +1,5 @@
 "use client"
 
-/**
- * StepSeven — Review and Pay
- *
- * Shows a full summary of all submitted details.
- * Payment via Paystack inline.
- *
- * On payment success:
- * 1. Reference sent to /api/payment/verify
- * 2. On verified: POST /api/booking to confirm
- * 3. Redirect to /confirmation
- */
-
 import { useRouter } from "next/navigation"
 
 const SERVICE_LABELS = {
@@ -35,6 +23,13 @@ const PRICES = {
   consultation:  15000,
 }
 
+const formatPrice = (amount) =>
+  new Intl.NumberFormat("en-NG", {
+    style: "currency",
+    currency: "NGN",
+    minimumFractionDigits: 0,
+  }).format(amount)
+
 export default function StepSeven({
   formData,
   prevStep,
@@ -45,64 +40,6 @@ export default function StepSeven({
 }) {
   const router = useRouter()
   const price = PRICES[formData.service] || 45000
-
-  const formatPrice = (amount) =>
-    new Intl.NumberFormat("en-NG", {
-      style: "currency",
-      currency: "NGN",
-      minimumFractionDigits: 0,
-    }).format(amount)
-
-  const handlePayment = () => {
-    setIsSubmitting(true)
-
-    const handler = window.PaystackPop.setup({
-      key: process.env.NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY,
-      email: formData.email,
-      amount: price * 100, // Paystack uses kobo
-      currency: "NGN",
-      metadata: {
-        name: formData.name,
-        phone: formData.phone,
-      },
-      onClose: () => {
-        setIsSubmitting(false)
-      },
-      callback: async (response) => {
-        try {
-          // 1. Verify payment server-side
-          const verifyRes = await fetch("/api/payment/verify", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ reference: response.reference }),
-          })
-          const verifyData = await verifyRes.json()
-          if (!verifyData.success) throw new Error("Payment verification failed")
-
-          // 2. Confirm booking
-          const bookRes = await fetch("/api/booking", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              ...formData,
-              paymentRef: response.reference,
-              anonymousSessionId,
-            }),
-          })
-          const bookData = await bookRes.json()
-          if (!bookData.success) throw new Error("Booking confirmation failed")
-
-          // 3. Redirect to confirmation
-          router.push("/confirmation")
-        } catch (err) {
-          setError("Payment went through but something went wrong confirming your booking. Please contact us.")
-          setIsSubmitting(false)
-        }
-      },
-    })
-
-    handler.openIframe()
-  }
 
   const rows = [
     { label: "Service",     value: SERVICE_LABELS[formData.service] || "—" },
@@ -124,19 +61,59 @@ export default function StepSeven({
     { label: "Phone", value: formData.phone || "—" },
   ]
 
+  const handlePayment = () => {
+    setIsSubmitting(true)
+
+    const handler = window.PaystackPop.setup({
+      key: process.env.NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY,
+      email: formData.email,
+      amount: price * 100,
+      currency: "NGN",
+      metadata: { name: formData.name, phone: formData.phone },
+      onClose: () => { setIsSubmitting(false) },
+      callback: async (response) => {
+        try {
+          const verifyRes = await fetch("/api/payment/verify", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ reference: response.reference }),
+          })
+          const verifyData = await verifyRes.json()
+          if (!verifyData.success) throw new Error("Payment verification failed")
+
+          const bookRes = await fetch("/api/booking", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              ...formData,
+              paymentRef: response.reference,
+              anonymousSessionId,
+            }),
+          })
+          const bookData = await bookRes.json()
+          if (!bookData.success) throw new Error("Booking confirmation failed")
+
+          router.push("/confirmation")
+        } catch {
+          setError("Payment went through but something went wrong confirming your booking. Please contact us.")
+          setIsSubmitting(false)
+        }
+      },
+    })
+
+    handler.openIframe()
+  }
+
   return (
     <div className="booking-card">
-      {/* Header */}
-      <div style={{ marginBottom: "28px" }}>
+
+      <div className="mb-7">
         <div className="step-eyebrow">Step 7 of 7</div>
-        <div className="step-title">Review and pay</div>
-        <div className="step-sub">
-          Check your details before completing your payment.
-        </div>
+        <h2 className="step-title">Review and pay</h2>
+        <p className="step-sub">Check your details before completing your payment.</p>
       </div>
 
-      {/* Review table */}
-      <div className="review-table">
+      <div className="review-table mb-4">
         {rows.map((row) => (
           <div className="review-row" key={row.label}>
             <span className="review-label">{row.label}</span>
@@ -149,20 +126,16 @@ export default function StepSeven({
         </div>
       </div>
 
-      {/* Security note */}
       <div className="info-box green">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" style={{ flexShrink: 0, marginTop: "1px" }} aria-hidden="true">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" className="shrink-0 mt-0.5" aria-hidden="true">
           <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
         </svg>
-        <span>
-          Payment is processed securely via Paystack. Your booking is confirmed immediately after payment.
-        </span>
+        <span>Payment is processed securely via Paystack. Your booking is confirmed immediately after payment.</span>
       </div>
 
-      {/* Paystack script */}
+      {/* Paystack inline script */}
       <script src="https://js.paystack.co/v1/inline.js" async />
 
-      {/* Actions */}
       <div className="step-actions">
         <button className="btn-back" onClick={prevStep} aria-label="Go back to your details">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" aria-hidden="true">

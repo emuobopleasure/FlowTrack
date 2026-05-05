@@ -1,14 +1,5 @@
 "use client"
 
-/**
- * StepThree — Outfit Style Selection
- *
- * Grid/List view toggle.
- * Real Nigerian male outfit styles with Unsplash images.
- * Single selection — selecting one deselects all others.
- * Grid and list views stay in sync.
- */
-
 import { useState } from "react"
 
 const outfits = [
@@ -62,48 +53,26 @@ const CheckIcon = () => (
   </svg>
 )
 
-const GridIcon = () => (
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
-    <rect x="3" y="3" width="7" height="7" rx="1"/>
-    <rect x="14" y="3" width="7" height="7" rx="1"/>
-    <rect x="3" y="14" width="7" height="7" rx="1"/>
-    <rect x="14" y="14" width="7" height="7" rx="1"/>
-  </svg>
-)
-
-const ListIcon = () => (
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
-    <line x1="8" y1="6" x2="21" y2="6"/>
-    <line x1="8" y1="12" x2="21" y2="12"/>
-    <line x1="8" y1="18" x2="21" y2="18"/>
-    <line x1="3" y1="6" x2="3.01" y2="6"/>
-    <line x1="3" y1="12" x2="3.01" y2="12"/>
-    <line x1="3" y1="18" x2="3.01" y2="18"/>
-  </svg>
-)
-
 export default function StepThree({ formData, updateFormData, nextStep, prevStep }) {
   const [view, setView] = useState("grid")
   const selected = formData.outfitStyle || ""
 
-  const handleSelect = (id) => {
-    updateFormData({ outfitStyle: id })
-  }
+  const handleSelect = (id) => updateFormData({ outfitStyle: id })
 
   return (
-    <div className="booking-card" style={{ maxWidth: "780px" }}>
-      {/* Header */}
-      <div style={{ marginBottom: "24px" }}>
+    <div className="booking-card max-w-[780px]">
+
+      <div className="mb-6">
         <div className="step-eyebrow">Step 3 of 7</div>
-        <div className="step-title">Choose your style</div>
-        <div className="step-sub">
-          Pick the outfit style you want. You can describe your preferences in detail in the next steps.
-        </div>
+        <h2 className="step-title">Choose your style</h2>
+        <p className="step-sub">
+          Pick the outfit style you want. You can describe your preferences in the next steps.
+        </p>
       </div>
 
       {/* Toolbar */}
       <div className="outfit-toolbar">
-        <span style={{ fontSize: ".8125rem", color: "#94A3B8", fontWeight: "500" }}>
+        <span className="text-[.8125rem] text-text-muted font-medium">
           {outfits.length} styles available
         </span>
         <div className="view-toggle" role="group" aria-label="Toggle view">
@@ -113,7 +82,12 @@ export default function StepThree({ formData, updateFormData, nextStep, prevStep
             aria-label="Grid view"
             aria-pressed={view === "grid"}
           >
-            <GridIcon />
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
+              <rect x="3" y="3" width="7" height="7" rx="1"/>
+              <rect x="14" y="3" width="7" height="7" rx="1"/>
+              <rect x="3" y="14" width="7" height="7" rx="1"/>
+              <rect x="14" y="14" width="7" height="7" rx="1"/>
+            </svg>
           </button>
           <button
             className={`view-btn ${view === "list" ? "active" : ""}`}
@@ -121,18 +95,21 @@ export default function StepThree({ formData, updateFormData, nextStep, prevStep
             aria-label="List view"
             aria-pressed={view === "list"}
           >
-            <ListIcon />
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
+              <line x1="8" y1="6" x2="21" y2="6"/>
+              <line x1="8" y1="12" x2="21" y2="12"/>
+              <line x1="8" y1="18" x2="21" y2="18"/>
+              <line x1="3" y1="6" x2="3.01" y2="6"/>
+              <line x1="3" y1="12" x2="3.01" y2="12"/>
+              <line x1="3" y1="18" x2="3.01" y2="18"/>
+            </svg>
           </button>
         </div>
       </div>
 
       {/* Grid view */}
       {view === "grid" && (
-        <div
-          className="outfit-grid"
-          role="radiogroup"
-          aria-label="Outfit styles"
-        >
+        <div className="outfit-grid" role="radiogroup" aria-label="Outfit styles">
           {outfits.map((outfit) => {
             const isSelected = selected === outfit.id
             return (
@@ -173,11 +150,7 @@ export default function StepThree({ formData, updateFormData, nextStep, prevStep
 
       {/* List view */}
       {view === "list" && (
-        <div
-          className="outfit-list"
-          role="radiogroup"
-          aria-label="Outfit styles"
-        >
+        <div className="outfit-list" role="radiogroup" aria-label="Outfit styles">
           {outfits.map((outfit) => {
             const isSelected = selected === outfit.id
             return (
@@ -200,7 +173,7 @@ export default function StepThree({ formData, updateFormData, nextStep, prevStep
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img src={outfit.image} alt={outfit.name} loading="lazy" />
                 </div>
-                <div className="outfit-list-info">
+                <div className="flex-1">
                   <div className="outfit-list-name">{outfit.name}</div>
                   <div className="outfit-list-desc">{outfit.desc}</div>
                 </div>
@@ -213,7 +186,6 @@ export default function StepThree({ formData, updateFormData, nextStep, prevStep
         </div>
       )}
 
-      {/* Actions */}
       <div className="step-actions">
         <button className="btn-back" onClick={prevStep} aria-label="Go back to date and time">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" aria-hidden="true">

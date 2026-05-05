@@ -1,14 +1,5 @@
 "use client"
 
-/**
- * StepTwo — Date, Time, and Measurement Method
- *
- * Captures:
- * - appointmentDate
- * - appointmentTime
- * - measurementType: "physical" | "self"
- */
-
 const times = [
   "9:00 AM", "10:00 AM", "11:00 AM",
   "12:00 PM", "2:00 PM", "3:00 PM", "4:00 PM",
@@ -44,7 +35,6 @@ const CheckIcon = () => (
   </svg>
 )
 
-// Today's date in YYYY-MM-DD for the min date attribute
 const today = new Date().toISOString().split("T")[0]
 
 export default function StepTwo({ formData, updateFormData, nextStep, prevStep }) {
@@ -52,17 +42,17 @@ export default function StepTwo({ formData, updateFormData, nextStep, prevStep }
 
   return (
     <div className="booking-card">
-      {/* Header */}
-      <div style={{ marginBottom: "28px" }}>
+
+      <div className="mb-7">
         <div className="step-eyebrow">Step 2 of 7</div>
-        <div className="step-title">Date and appointment</div>
-        <div className="step-sub">
+        <h2 className="step-title">Date and appointment</h2>
+        <p className="step-sub">
           Choose when you would like your appointment and how you prefer to handle measurements.
-        </div>
+        </p>
       </div>
 
       {/* Date and time */}
-      <div className="field-row-2" style={{ marginBottom: "20px" }}>
+      <div className="field-row-2 mb-5">
         <div className="booking-field">
           <label htmlFor="appt-date">Preferred date</label>
           <input
@@ -91,7 +81,11 @@ export default function StepTwo({ formData, updateFormData, nextStep, prevStep }
       {/* Measurement method */}
       <div className="booking-field">
         <label>Measurement method</label>
-        <div style={{ display: "flex", flexDirection: "column", gap: "10px", marginTop: "8px" }}>
+        <div
+          className="flex flex-col gap-2.5 mt-2"
+          role="radiogroup"
+          aria-label="Measurement method"
+        >
           {measurementOptions.map((opt) => {
             const isSelected = selected === opt.id
             return (
@@ -110,11 +104,11 @@ export default function StepTwo({ formData, updateFormData, nextStep, prevStep }
                 }}
               >
                 <div className="option-icon">{opt.icon}</div>
-                <div style={{ flex: 1 }}>
-                  <div style={{ fontSize: ".9375rem", fontWeight: "600", color: "#0D1B2A", marginBottom: "2px" }}>
+                <div className="flex-1">
+                  <div className="text-[.9375rem] font-semibold text-text-primary mb-0.5">
                     {opt.name}
                   </div>
-                  <div style={{ fontSize: ".8rem", color: "#64748B" }}>
+                  <div className="text-[.8rem] text-text-secondary">
                     {opt.desc}
                   </div>
                 </div>
@@ -127,7 +121,6 @@ export default function StepTwo({ formData, updateFormData, nextStep, prevStep }
         </div>
       </div>
 
-      {/* Actions */}
       <div className="step-actions">
         <button className="btn-back" onClick={prevStep} aria-label="Go back to service selection">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" aria-hidden="true">
@@ -135,11 +128,7 @@ export default function StepTwo({ formData, updateFormData, nextStep, prevStep }
           </svg>
           Back
         </button>
-        <button
-          className="btn-continue"
-          onClick={nextStep}
-          aria-label="Continue to outfit style selection"
-        >
+        <button className="btn-continue" onClick={nextStep} aria-label="Continue to style selection">
           Continue
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" aria-hidden="true">
             <path d="M5 12h14M12 5l7 7-7 7"/>
