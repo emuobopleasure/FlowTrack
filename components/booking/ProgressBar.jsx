@@ -1,14 +1,17 @@
 "use client"
 
-const STEPS = [
-  "Service",
-  "Time",
-  "Style",
-  "Measures",
-  "Save",
-  "Details",
-  "Pay",
-]
+const STEP_LABELS = {
+  service:                  "Service",
+  date:                     "Time",
+  date_alteration:          "Details",
+  date_consultation:        "Format",
+  style:                    "Style",
+  measurements:             "Measures",
+  measurements_alteration:  "Measures",
+  email:                    "Save",
+  details:                  "Details",
+  review:                   "Pay",
+}
 
 const CheckIcon = () => (
   <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3" strokeLinecap="round">
@@ -16,19 +19,22 @@ const CheckIcon = () => (
   </svg>
 )
 
-export default function ProgressBar({ currentStep }) {
+export default function ProgressBar({ currentStep, totalSteps, flow }) {
+  // Use the flow from props to get labels, fallback to a generic name if missing
+  const labels = flow?.map(key => STEP_LABELS[key] || key) || []
+
   return (
     <div className="w-full" role="navigation" aria-label="Booking progress">
       {/* Dots and lines */}
       <div className="flex items-center justify-between">
-        {STEPS.map((label, i) => {
+        {labels.map((label, i) => {
           const stepNum = i + 1
           const isDone = stepNum < currentStep
           const isActive = stepNum === currentStep
-          const isLast = i === STEPS.length - 1
+          const isLast = i === labels.length - 1
 
           return (
-            <div key={label} className={`flex items-center ${!isLast ? "flex-1" : ""}`}>
+            <div key={label + i} className={`flex items-center ${!isLast ? "flex-1" : ""}`}>
               {/* Dot */}
               <div
                 className={`p-dot !w-6 !h-6 !text-[10px] ${isDone ? "done" : isActive ? "active" : "upcoming"}`}
@@ -45,13 +51,13 @@ export default function ProgressBar({ currentStep }) {
         })}
       </div>
 
-      {/* Labels - only visible on larger screens to prevent crowding */}
-      <div className="hidden lg:flex justify-between mt-2">
-        {STEPS.map((label, i) => (
+      {/* Labels - only visible on larger screens */}
+      <div className="hidden lg:flex justify-between mt-2 px-1">
+        {labels.map((label, i) => (
           <span 
-            key={label} 
-            className={`text-[12px] font-semibold ${i + 1 <= currentStep ? "text-navy" : "text-slate-400"}`}
-            style={{ width: '30px', textAlign: 'center' }}
+            key={label + i} 
+            className={`text-[11px] font-bold uppercase tracking-tight ${i + 1 <= currentStep ? "text-navy" : "text-slate-400"}`}
+            style={{ width: '40px', textAlign: 'center' }}
           >
             {label}
           </span>

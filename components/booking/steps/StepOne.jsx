@@ -4,8 +4,8 @@ const services = [
   {
     id: "custom_outfit",
     name: "Custom Outfit",
-    desc: "Original piece built to your measurements — agbada, senator, kaftan and more",
-    badge: "Most booked",
+    desc: "Original piece built to your measurements, agbada, senator, kaftan and more",
+    // badge: "Most booked",
     featured: true,
     icon: (
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
@@ -16,7 +16,7 @@ const services = [
   {
     id: "alteration",
     name: "Alteration",
-    desc: "Expert adjustments to an existing garment — resizing, hemming, restructuring",
+    desc: "Expert adjustments to an existing garment, resizing, hemming, restructuring",
     badge: null,
     featured: false,
     icon: (
@@ -84,7 +84,7 @@ export default function StepOne({ formData, updateFormData, nextStep }) {
               <div className="option-icon">{svc.icon}</div>
 
               <div className="flex-1">
-                <div className="flex items-center gap-2 mb-0.5">
+                <div className="flex items-center justify-between gap-2 mb-0.5 min-w-0">
                   <span className={`font-semibold text-text-primary ${svc.featured ? "text-base" : "text-[.9375rem]"}`}>
                     {svc.name}
                   </span>

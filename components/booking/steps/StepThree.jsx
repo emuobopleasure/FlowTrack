@@ -7,43 +7,43 @@ const outfits = [
     id: "agbada",
     name: "Agbada",
     type: "Traditional · Formal",
-    desc: "Wide flowing robes — weddings, ceremonies, and high-profile events",
-    image: "https://images.unsplash.com/photo-1578632767115-351597cf2477?w=400&h=533&fit=crop&q=80",
+    desc: "Wide flowing robes crafted for weddings, ceremonies, and high-profile events. Comes with inner wear and cap.",
+    image: "https://images.unsplash.com/photo-1578632767115-351597cf2477?w=600&h=800&fit=crop&q=80",
   },
   {
     id: "senator",
     name: "Senator Suit",
     type: "Smart Casual · Event",
-    desc: "Two-piece native suit — office-ready Nigerian style for any occasion",
-    image: "https://images.unsplash.com/photo-1507537297725-24a1c029d3ca?w=400&h=533&fit=crop&q=80",
+    desc: "A tailored two-piece native suit. Office-ready Nigerian style that works for any occasion from boardrooms to events.",
+    image: "https://images.unsplash.com/photo-1507537297725-24a1c029d3ca?w=600&h=800&fit=crop&q=80",
   },
   {
     id: "kaftan",
     name: "Kaftan",
     type: "Casual · Relaxed",
-    desc: "Comfortable everyday style — relaxed fit with a clean, modern cut",
-    image: "https://images.unsplash.com/photo-1601924994987-69e26d50dc26?w=400&h=533&fit=crop&q=80",
+    desc: "Comfortable everyday wear with a clean, modern cut. Perfect for casual outings, lounging, or low-key events.",
+    image: "https://images.unsplash.com/photo-1601924994987-69e26d50dc26?w=600&h=800&fit=crop&q=80",
   },
   {
     id: "ankara_shirt",
     name: "Ankara Shirt",
     type: "Smart Casual",
-    desc: "Vibrant Ankara prints tailored into a crisp modern shirt",
-    image: "https://images.unsplash.com/photo-1631125915902-d5c3380ecfb3?w=400&h=533&fit=crop&q=80",
+    desc: "Vibrant Ankara prints cut into a crisp modern shirt. Pairs with trousers or jeans for a sharp casual look.",
+    image: "https://images.unsplash.com/photo-1631125915902-d5c3380ecfb3?w=600&h=800&fit=crop&q=80",
   },
   {
     id: "babariga",
     name: "Babariga",
     type: "Traditional · Formal",
-    desc: "Full traditional regalia with wide embroidered sleeves",
-    image: "https://images.unsplash.com/photo-1574201635302-388dd92a4c3f?w=400&h=533&fit=crop&q=80",
+    desc: "Full traditional regalia with wide, embroidered sleeves. A statement piece for important ceremonies.",
+    image: "https://images.unsplash.com/photo-1574201635302-388dd92a4c3f?w=600&h=800&fit=crop&q=80",
   },
   {
     id: "aso_oke",
     name: "Aso-Oke Set",
     type: "Ceremonial",
-    desc: "Full ceremonial aso-oke for weddings and traditional occasions",
-    image: "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=400&h=533&fit=crop&q=80",
+    desc: "Full ceremonial aso-oke regalia for weddings and traditional occasions. Available in hand-woven fabric.",
+    image: "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=600&h=800&fit=crop&q=80",
   },
 ]
 
@@ -53,20 +53,21 @@ const CheckIcon = () => (
   </svg>
 )
 
-export default function StepThree({ formData, updateFormData, nextStep, prevStep }) {
+export default function StepThree({
+  formData, updateFormData, nextStep, prevStep, currentStep, totalSteps,
+}) {
   const [view, setView] = useState("grid")
   const selected = formData.outfitStyle || ""
 
   const handleSelect = (id) => updateFormData({ outfitStyle: id })
 
   return (
-    <div className="booking-card max-w-[780px]">
-
+    <div className="booking-card" style={{ maxWidth: "780px" }}>
       <div className="mb-6">
-        <div className="step-eyebrow">Step 3 of 7</div>
+        <div className="step-eyebrow">Step {currentStep} of {totalSteps}</div>
         <h2 className="step-title">Choose your style</h2>
         <p className="step-sub">
-          Pick the outfit style you want. You can describe your preferences in the next steps.
+          Pick the outfit style you want. You can describe your preferences in detail in the next steps.
         </p>
       </div>
 
@@ -148,9 +149,13 @@ export default function StepThree({ formData, updateFormData, nextStep, prevStep
         </div>
       )}
 
-      {/* List view */}
+      {/* List view — big scrollable cards */}
       {view === "list" && (
-        <div className="outfit-list" role="radiogroup" aria-label="Outfit styles">
+        <div
+          className="flex flex-col gap-4"
+          role="radiogroup"
+          aria-label="Outfit styles"
+        >
           {outfits.map((outfit) => {
             const isSelected = selected === outfit.id
             return (
@@ -159,7 +164,13 @@ export default function StepThree({ formData, updateFormData, nextStep, prevStep
                 role="radio"
                 aria-checked={isSelected}
                 tabIndex={0}
-                className={`outfit-list-item ${isSelected ? "selected" : ""}`}
+                className={[
+                  "flex flex-col sm:flex-row rounded-2xl overflow-hidden border-2 cursor-pointer",
+                  "transition-all duration-200",
+                  isSelected
+                    ? "border-navy shadow-[0_0_0_3px_rgba(27,58,107,.12)]"
+                    : "border-border-light hover:border-navy",
+                ].join(" ")}
                 onClick={() => handleSelect(outfit.id)}
                 onKeyDown={(e) => {
                   if (e.key === "Enter" || e.key === " ") {
@@ -168,17 +179,63 @@ export default function StepThree({ formData, updateFormData, nextStep, prevStep
                   }
                 }}
                 aria-label={`${outfit.name} — ${outfit.type}`}
+                style={{
+                  background: isSelected ? "#EEF3FB" : "#fff",
+                  transform: isSelected ? "translateY(-2px)" : undefined,
+                }}
               >
-                <div className="outfit-list-thumb">
+                {/* Image — full width on mobile, fixed width on desktop */}
+                <div className="w-full sm:w-[160px] h-[220px] sm:h-auto shrink-0 overflow-hidden bg-[#EEF3FB]">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={outfit.image} alt={outfit.name} loading="lazy" />
+                  <img
+                    src={outfit.image}
+                    alt={outfit.name}
+                    loading="lazy"
+                    className="w-full h-full object-cover object-top transition-transform duration-500"
+                    style={{ transform: isSelected ? "scale(1.03)" : "scale(1)" }}
+                  />
                 </div>
-                <div className="flex-1">
-                  <div className="outfit-list-name">{outfit.name}</div>
-                  <div className="outfit-list-desc">{outfit.desc}</div>
-                </div>
-                <div className="outfit-list-check" aria-hidden="true">
-                  {isSelected && <CheckIcon />}
+
+                {/* Content */}
+                <div className="flex-1 flex flex-col justify-between p-5 gap-3">
+                  <div>
+                    <div className="flex items-start justify-between gap-3">
+                      <div>
+                        <h3 className="text-[1.125rem] font-bold text-text-primary tracking-tight">
+                          {outfit.name}
+                        </h3>
+                        <span className="text-[.75rem] font-medium text-navy mt-0.5 block">
+                          {outfit.type}
+                        </span>
+                      </div>
+                      {/* Check indicator */}
+                      <div
+                        className={[
+                          "w-6 h-6 rounded-full border-2 flex items-center justify-center shrink-0 mt-0.5",
+                          "transition-all duration-200",
+                          isSelected
+                            ? "bg-navy border-navy"
+                            : "border-border bg-white",
+                        ].join(" ")}
+                        aria-hidden="true"
+                      >
+                        {isSelected && <CheckIcon />}
+                      </div>
+                    </div>
+
+                    <p className="text-[.875rem] text-text-secondary leading-relaxed mt-3">
+                      {outfit.desc}
+                    </p>
+                  </div>
+
+                  {isSelected && (
+                    <div className="flex items-center gap-2 text-[.8125rem] font-semibold text-navy">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" aria-hidden="true">
+                        <polyline points="20 6 9 17 4 12"/>
+                      </svg>
+                      Selected
+                    </div>
+                  )}
                 </div>
               </div>
             )
@@ -187,7 +244,7 @@ export default function StepThree({ formData, updateFormData, nextStep, prevStep
       )}
 
       <div className="step-actions">
-        <button className="btn-back" onClick={prevStep} aria-label="Go back to date and time">
+        <button className="btn-back" onClick={prevStep}>
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" aria-hidden="true">
             <path d="M19 12H5M12 5l-7 7 7 7"/>
           </svg>
@@ -197,7 +254,6 @@ export default function StepThree({ formData, updateFormData, nextStep, prevStep
           className="btn-continue"
           onClick={nextStep}
           disabled={!selected}
-          aria-label="Continue to measurements"
         >
           Continue
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" aria-hidden="true">
