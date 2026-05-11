@@ -3,24 +3,23 @@
 import { useState } from "react"
 
 const customFields = [
-  { id: "chest",    label: "Chest (cm)",          placeholder: "e.g. 96" },
-  { id: "waist",    label: "Waist (cm)",           placeholder: "e.g. 82" },
-  { id: "hips",     label: "Hips (cm)",            placeholder: "e.g. 100" },
-  { id: "shoulder", label: "Shoulder width (cm)",  placeholder: "e.g. 46" },
-  { id: "height",   label: "Height (cm)",          placeholder: "e.g. 178" },
-  { id: "sleeve",   label: "Sleeve length (cm)",   placeholder: "e.g. 64" },
+  { id: "chest",    label: "Chest (cm)",         placeholder: "e.g. 96"  },
+  { id: "waist",    label: "Waist (cm)",          placeholder: "e.g. 82"  },
+  { id: "hips",     label: "Hips (cm)",           placeholder: "e.g. 100" },
+  { id: "shoulder", label: "Shoulder width (cm)", placeholder: "e.g. 46"  },
+  { id: "height",   label: "Height (cm)",         placeholder: "e.g. 178" },
+  { id: "sleeve",   label: "Sleeve length (cm)",  placeholder: "e.g. 64"  },
 ]
 
 const alterationFields = [
-  { id: "chest",    label: "Chest (cm)",      placeholder: "e.g. 96" },
-  { id: "waist",    label: "Waist (cm)",      placeholder: "e.g. 82" },
-  { id: "hips",     label: "Hips (cm)",       placeholder: "e.g. 100" },
-  { id: "height",   label: "Height (cm)",     placeholder: "e.g. 178" },
+  { id: "chest",  label: "Chest (cm)",  placeholder: "e.g. 96"  },
+  { id: "waist",  label: "Waist (cm)",  placeholder: "e.g. 82"  },
+  { id: "hips",   label: "Hips (cm)",   placeholder: "e.g. 100" },
+  { id: "height", label: "Height (cm)", placeholder: "e.g. 178" },
 ]
 
 export default function StepFour({
   formData,
-  updateFormData,
   updateMeasurements,
   updateAlterationMeasurements,
   nextStep,
@@ -30,45 +29,67 @@ export default function StepFour({
   alterationMode = false,
 }) {
   const [errors, setErrors] = useState({})
-  const isPhysical = formData.measurementType === "physical"
-  const isSelf = formData.measurementType === "self"
 
+  const isPhysical = formData.measurementType === "physical"
+  const isSelf     = formData.measurementType === "self"
+
+  // Pick the right measurements object and update function
   const measurements = alterationMode
-    ? formData.alterationMeasurements
-    : formData.measurements
+    ? (formData.alterationMeasurements || {})
+    : (formData.measurements || {})
 
   const updateFn = alterationMode
-    ? (updateAlterationMeasurements || updateMeasurements)
+    ? updateAlterationMeasurements
     : updateMeasurements
 
   const fields = alterationMode ? alterationFields : customFields
 
+  // Show the form when:
+  // - alterationMode is true (always show fields for alteration)
+  // - OR service is custom outfit AND measurement type is "self"
+  const showForm = alterationMode || isSelf
+
   const validate = () => {
-    if (isPhysical || alterationMode === false && !isSelf) return true
+    // Physical fitting for custom outfit — no form, just continue
+    if (isPhysical && !alterationMode) return {}
 
     const e = {}
     fields.forEach((field) => {
-      if (!measurements?.[field.id]?.trim()) {
-        e[field.id] = "Required"
+      const val = measurements[field.id]
+      if (!val || String(val).trim() === "") {
+        e[`meas-${field.id}`] = "Required"
       }
     })
     setErrors(e)
-    return Object.keys(e).length === 0
+    return e
   }
 
   const handleContinue = () => {
-    if (validate()) nextStep()
+    const e = validate()
+    if (Object.keys(e).length > 0) {
+      // Scroll to first unfilled field
+      const firstKey = Object.keys(e)[0]
+      const el = document.getElementById(firstKey)
+      if (el) {
+        el.scrollIntoView({ behavior: "smooth", block: "center" })
+        setTimeout(() => el.focus(), 400)
+      }
+      return
+    }
+    nextStep()
   }
 
   return (
     <div className="booking-card">
       <div className="mb-7">
-        <div className="step-eyebrow">Step {currentStep} of {totalSteps}</div>
+        <div className="step-eyebrow">
+          Step {currentStep} of {totalSteps}
+        </div>
         <h2 className="step-title">
           {alterationMode ? "Your current measurements" : "Measurements"}
         </h2>
         <p className="step-sub">
-          {isPhysical
+          {isPhysical && !alterationMode
             ? "You chose to come in for a fitting. Your measurements will be taken at the studio."
             : alterationMode
             ? "Enter your current measurements so we can alter the garment correctly."
@@ -76,10 +97,15 @@ export default function StepFour({
         </p>
       </div>
 
+      {/* Physical fitting confirmation — no form */}
       {isPhysical && !alterationMode ? (
-        /* Physical fitting — show confirmation, no form */
         <div className="info-box blue" role="status">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" className="shrink-0 mt-0.5" aria-hidden="true">
+          <svg
+            width="18" height="18" viewBox="0 0 24 24"
+            fill="none" stroke="currentColor" strokeWidth="2"
+            strokeLinecap="round" className="shrink-0 mt-0.5"
+            aria-hidden="true"
+          >
             <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
           </svg>
           <div>
@@ -87,23 +113,30 @@ export default function StepFour({
             <p>
               Your measurements will be taken professionally at the studio on{" "}
               <strong>{formData.appointmentDate}</strong> at{" "}
-              <strong>{formData.appointmentTime}</strong>. No action needed here — just continue.
+              <strong>{formData.appointmentTime}</strong>.
+              No action needed here — just continue.
             </p>
           </div>
         </div>
       ) : (
         /* Measurement form */
         <>
-          {isSelf && !alterationMode && (
-            <div className="info-box blue mb-5">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" className="shrink-0 mt-0.5" aria-hidden="true">
-                <circle cx="12" cy="12" r="10"/>
-                <line x1="12" y1="8" x2="12" y2="12"/>
-                <line x1="12" y1="16" x2="12.01" y2="16"/>
-              </svg>
-              <span>All fields are required. Use a flexible measuring tape and measure over light clothing for accuracy.</span>
-            </div>
-          )}
+          <div className="info-box blue mb-5">
+            <svg
+              width="16" height="16" viewBox="0 0 24 24"
+              fill="none" stroke="currentColor" strokeWidth="2"
+              strokeLinecap="round" className="shrink-0 mt-0.5"
+              aria-hidden="true"
+            >
+              <circle cx="12" cy="12" r="10"/>
+              <line x1="12" y1="8" x2="12" y2="12"/>
+              <line x1="12" y1="16" x2="12.01" y2="16"/>
+            </svg>
+            <span>
+              All fields marked * are required. Use a flexible measuring
+              tape and measure over light clothing for accuracy.
+            </span>
+          </div>
 
           <div className="field-row-2">
             {fields.map((field) => (
@@ -114,18 +147,33 @@ export default function StepFour({
                 <input
                   id={`meas-${field.id}`}
                   type="number"
+                  inputMode="decimal"
                   min="0"
+                  step="0.1"
                   placeholder={field.placeholder}
-                  value={measurements?.[field.id] || ""}
+                  value={measurements[field.id] ?? ""}
                   onChange={(e) => {
                     updateFn({ [field.id]: e.target.value })
-                    setErrors(prev => ({ ...prev, [field.id]: "" }))
+                    setErrors(prev => ({ ...prev, [`meas-${field.id}`]: "" }))
                   }}
-                  style={{ borderColor: errors[field.id] ? "#DC2626" : undefined }}
-                  aria-invalid={!!errors[field.id]}
+                  style={{
+                    borderColor: errors[`meas-${field.id}`] ? "#DC2626" : undefined,
+                  }}
+                  aria-invalid={!!errors[`meas-${field.id}`]}
+                  aria-describedby={
+                    errors[`meas-${field.id}`]
+                      ? `err-${field.id}`
+                      : undefined
+                  }
                 />
-                {errors[field.id] && (
-                  <span className="text-[.75rem] text-error mt-0.5">Required</span>
+                {errors[`meas-${field.id}`] && (
+                  <span
+                    id={`err-${field.id}`}
+                    className="text-[.75rem] text-error mt-0.5 block"
+                    role="alert"
+                  >
+                    This field is required
+                  </span>
                 )}
               </div>
             ))}
@@ -135,13 +183,13 @@ export default function StepFour({
             <label htmlFor="meas-notes">Additional notes (optional)</label>
             <textarea
               id="meas-notes"
+              rows={3}
               placeholder={
                 alterationMode
                   ? "e.g. The trousers need to be taken in at the waist by 2 inches..."
-                  : "e.g. I prefer a relaxed fit around the shoulders, longer hem length..."
+                  : "e.g. I prefer a relaxed fit around the shoulders..."
               }
-              rows={3}
-              value={measurements?.notes || ""}
+              value={measurements.notes ?? ""}
               onChange={(e) => updateFn({ notes: e.target.value })}
             />
           </div>
@@ -149,15 +197,31 @@ export default function StepFour({
       )}
 
       <div className="step-actions">
-        <button className="btn-back" onClick={prevStep}>
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" aria-hidden="true">
+        <button
+          className="btn-back"
+          onClick={prevStep}
+          aria-label="Go back"
+        >
+          <svg
+            width="16" height="16" viewBox="0 0 24 24"
+            fill="none" stroke="currentColor" strokeWidth="2.5"
+            strokeLinecap="round" aria-hidden="true"
+          >
             <path d="M19 12H5M12 5l-7 7 7 7"/>
           </svg>
           Back
         </button>
-        <button className="btn-continue" onClick={handleContinue}>
+        <button
+          className="btn-continue"
+          onClick={handleContinue}
+          aria-label="Continue"
+        >
           Continue
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" aria-hidden="true">
+          <svg
+            width="15" height="15" viewBox="0 0 24 24"
+            fill="none" stroke="currentColor" strokeWidth="2.5"
+            strokeLinecap="round" aria-hidden="true"
+          >
             <path d="M5 12h14M12 5l7 7-7 7"/>
           </svg>
         </button>

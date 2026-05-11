@@ -1202,26 +1202,33 @@ body {
     /* ============================================================
    Mobile fixed step actions
    ============================================================ */
-@media (max-width: 640px) {
-  .step-actions {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background: #fff;
-    border-top: 1px solid #E2E8F0;
-    padding: 16px 20px;
-    margin-top: 0;
-    z-index: 50;
-    box-shadow: 0 -4px 16px rgba(0,0,0,.06);
-  }
+    @media (max-width: 640px) {
+        .step-actions {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: #fff;
+            border-top: 1px solid #E2E8F0;
+            border-top-left-radius: 20px;
+            border-top-right-radius: 20px;
+            padding: 16px 20px;
+            margin-top: 0;
+            z-index: 50;
+            box-shadow: 0 -4px 16px rgba(0, 0, 0, .06);
+        }
 
-  /* Add bottom padding to booking card so content
+        /* Add bottom padding to booking card so content
      is not hidden behind the fixed action bar */
-  .booking-card {
-    padding-bottom: 100px;
-  }
-}
+        .booking-card {
+            padding-bottom: 100px;
+        }
+    }
+
+    /* Highlight invalid field */
+    .field-error {
+        border-color: #DC2626 !important;
+        box-shadow: 0 0 0 3px rgba(220, 38, 38, .1);
+    }
 
 }
-

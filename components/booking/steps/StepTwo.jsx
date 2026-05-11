@@ -11,7 +11,7 @@ const measurementOptions = [
   {
     id: "physical",
     name: "Come in for fitting",
-    desc: "Visit the studio on your appointment day — measurements taken professionally",
+    desc: "Visit the studio on your appointment day, measurements taken professionally",
     icon: (
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
         <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/>
@@ -22,7 +22,7 @@ const measurementOptions = [
   {
     id: "self",
     name: "Submit measurements remotely",
-    desc: "Fill in your measurements yourself — no visit required",
+    desc: "Fill in your measurements yourself, no visit required",
     icon: (
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
         <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/>

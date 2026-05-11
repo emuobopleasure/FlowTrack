@@ -42,6 +42,7 @@ export default function BookPage() {
     formData,
     updateFormData,
     updateMeasurements,
+    updateAlterationMeasurements,
     nextStep,
     prevStep,
     resetToStep,
@@ -64,13 +65,14 @@ export default function BookPage() {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ anonymousSessionId }),
-    }).catch(() => {})
+    }).catch(() => { })
   }, [anonymousSessionId])
 
   const stepProps = {
     formData,
     updateFormData,
     updateMeasurements,
+    updateAlterationMeasurements,
     nextStep,
     prevStep,
     anonymousSessionId,
