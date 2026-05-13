@@ -20,7 +20,7 @@ export default function ConfirmationPage() {
           Booking confirmed
         </h1>
         <p className="text-[.9375rem] text-text-secondary leading-[1.7] mb-8">
-          Your payment was successful and your booking is confirmed. Check your email — we have sent you a full summary and a 6-digit verification code.
+          Your payment was successful and your booking is confirmed. Check your email, we have sent you a full summary and a 6-digit verification code.
         </p>
 
         {/* Info boxes */}
@@ -32,7 +32,7 @@ export default function ConfirmationPage() {
             </svg>
             <div>
               <p className="font-semibold mb-0.5">Check your email</p>
-              <p>Your booking summary and 6-digit verification code have been sent. Keep the code — you will need it to access your booking details anytime.</p>
+              <p>Your booking summary and 6-digit verification code have been sent. Keep the code, you will need it to access your booking details anytime.</p>
             </div>
           </div>
 
@@ -42,7 +42,7 @@ export default function ConfirmationPage() {
             </svg>
             <div>
               <p className="font-semibold mb-0.5">Your booking is secure</p>
-              <p>All your details — measurements, style, date — are saved on record. Visit the link below anytime to view or verify your booking.</p>
+              <p>All your details; measurements, style, date are saved on record. Visit the link below anytime to view or verify your booking.</p>
             </div>
           </div>
         </div>

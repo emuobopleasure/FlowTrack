@@ -5,7 +5,7 @@ import "./globals.css"
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" })
 
 export const metadata = {
-  title: "FlowTrack — Nigerian Male Fashion Booking",
+  title: "FlowTrack - Nigerian Male Fashion Booking",
   description: "Book custom Nigerian male outfits, alterations, and styling consultations in minutes.",
 }
 
