@@ -1,116 +1,151 @@
 import mongoose, { Schema } from 'mongoose'
 
-/**
- * Booking Model
- *
- * A booking document is only created after payment is successfully
- * verified server-side via Paystack. It is never created before that.
- *
- * OTP fields:
- * - otp          → 6-digit code sent to the customer's email
- * - otpExpiresAt → timestamp 24 hours after generation
- * - otpVerified  → true once the customer verifies on /booking/verify
- *
- * The OTP is what allows the customer to access their booking summary
- * from any device at any time within 24 hours of confirmation.
- */
-
 const measurementSchema = new Schema(
   {
-    chest: { type: String, default: '' },
-    waist: { type: String, default: '' },
-    hips: { type: String, default: '' },
-    length: { type: String, default: '' },
-    notes: { type: String, default: '' },
+    chest:    { type: String, default: '' },
+    waist:    { type: String, default: '' },
+    hips:     { type: String, default: '' },
+    shoulder: { type: String, default: '' },
+    height:   { type: String, default: '' },
+    sleeve:   { type: String, default: '' },
+    notes:    { type: String, default: '' },
   },
   { _id: false }
-  // _id: false — this is a nested object, not its own collection.
-  // We do not need a separate _id on the measurements subdocument.
 )
 
 const bookingSchema = new Schema(
   {
     email: {
-      type: String,
+      type:     String,
       required: [true, 'Email is required'],
-      index: true,
+      index:    true,
       lowercase: true,
-      trim: true,
+      trim:     true,
     },
     name: {
-      type: String,
+      type:     String,
       required: [true, 'Name is required'],
-      trim: true,
+      trim:     true,
     },
     phone: {
-      type: String,
+      type:     String,
       required: [true, 'Phone number is required'],
-      trim: true,
+      trim:     true,
     },
+
+    // ── Service ──────────────────────────────────────────────
     service: {
       type: String,
       enum: {
-        values: ['custom_outfit', 'alteration', 'consultation'],
+        values:  ['custom_outfit', 'alteration', 'consultation'],
         message: '{VALUE} is not a valid service type',
       },
       required: [true, 'Service is required'],
     },
+
+    // ── Outfit style — only for custom_outfit ─────────────────
+    outfitStyle: {
+      type:    String,
+      default: '',
+      // One of: agbada, senator, kaftan, ankara_shirt, babariga, aso_oke
+      // Empty for alteration and consultation bookings
+    },
+
+    // ── Appointment ───────────────────────────────────────────
     appointmentDate: {
-      type: Date,
+      type:     String,
       required: [true, 'Appointment date is required'],
+      // Stored as string (YYYY-MM-DD) to avoid timezone conversion issues
     },
     appointmentTime: {
-      type: String,
+      type:     String,
       required: [true, 'Appointment time is required'],
     },
+
+    // ── Measurement — custom_outfit only ──────────────────────
     measurementType: {
       type: String,
       enum: {
-        values: ['physical', 'self'],
+        values:  ['physical', 'self'],
         message: '{VALUE} is not a valid measurement type',
       },
-      required: [true, 'Measurement type is required'],
+      // Not required at schema level — alteration and consultation
+      // do not use this field. Validated at the route level instead.
+      default: null,
     },
     measurements: {
-      type: measurementSchema,
+      type:    measurementSchema,
       default: () => ({}),
-      // Only populated when measurementType is "self".
-      // When measurementType is "physical", this remains empty.
+      // Only populated when measurementType is "self"
     },
-    specialRequests: {
-      type: String,
+
+    // ── Alteration — alteration only ──────────────────────────
+    alterationType: {
+      type:    String,
       default: '',
-      trim: true,
+      // One of: resize, hemming, repair, restructure
     },
+    alterationDetails: {
+      type:    String,
+      default: '',
+      trim:    true,
+      // Free-text description of what needs altering
+    },
+    alterationMeasurements: {
+      type:    measurementSchema,
+      default: () => ({}),
+      // Customer's current measurements for alteration reference
+    },
+
+    // ── Consultation — consultation only ──────────────────────
+    consultationFormat: {
+      type:    String,
+      default: '',
+      // "in_person" or "online"
+    },
+    consultationTopics: {
+      type:    String,
+      default: '',
+      trim:    true,
+      // What the customer wants to discuss
+    },
+
+    // ── Common ────────────────────────────────────────────────
+    specialRequests: {
+      type:    String,
+      default: '',
+      trim:    true,
+    },
+
+    // ── Payment ───────────────────────────────────────────────
     paymentRef: {
-      type: String,
+      type:     String,
       required: [true, 'Payment reference is required'],
-      unique: true,
-      // Paystack payment reference — unique per transaction.
-      // Stored so we can reference it in case of a payment dispute.
+      unique:   true,
     },
     paymentStatus: {
-      type: String,
-      enum: ['pending', 'paid', 'failed'],
+      type:    String,
+      enum:    ['pending', 'paid', 'failed'],
       default: 'pending',
     },
+    amount: {
+      type:    Number,
+      default: 0,
+      // Stored in Naira — not kobo
+    },
+
+    // ── OTP ───────────────────────────────────────────────────
     otp: {
-      type: String,
+      type:    String,
       default: null,
-      // 6-digit code as a string — stored as plain text for now.
-      // In a production app beyond this portfolio, hash with bcrypt.
     },
     otpExpiresAt: {
-      type: Date,
+      type:    Date,
       default: null,
-      // Set to Date.now() + 24 hours when OTP is generated.
-      // After this timestamp, the OTP is invalid.
     },
     otpVerified: {
-      type: Boolean,
+      type:    Boolean,
       default: false,
-      // Flipped to true once the customer successfully enters
-      // their email + OTP on /booking/verify.
     },
   },
   {

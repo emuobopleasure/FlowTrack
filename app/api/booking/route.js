@@ -4,41 +4,39 @@ import Booking from '@/models/Booking'
 import Session from '@/models/Session'
 import { generateOTP, generateOTPExpiry, sendConfirmationEmail } from '@/lib/token'
 
-/**
- * POST /api/booking
- *
- * Creates a confirmed booking after payment is verified.
- *
- * This route is only called after POST /api/payment/verify
- * returns verified: true. Never call this route directly
- * without verifying payment first.
- *
- * What happens here:
- * 1. Generate a 6-digit OTP and expiry timestamp
- * 2. Create the Booking document in MongoDB
- * 3. Update the Session status to "completed"
- * 4. Send the confirmation email with OTP via Resend
- * 5. Return the booking to the client
- */
+const PRICES = {
+  custom_outfit: 45000,
+  alteration:    8000,
+  consultation:  15000,
+}
+
 export const POST = async (request) => {
   try {
     await connectDB()
+
+    const body = await request.json()
 
     const {
       email,
       name,
       phone,
       service,
+      outfitStyle,
       appointmentDate,
       appointmentTime,
       measurementType,
       measurements,
+      alterationType,
+      alterationDetails,
+      alterationMeasurements,
+      consultationFormat,
+      consultationTopics,
       specialRequests,
       paymentRef,
       anonymousSessionId,
-    } = await request.json()
+    } = body
 
-    // Validate required fields before touching the database
+    // Validate required fields
     if (!email || !name || !phone || !service || !paymentRef) {
       return NextResponse.json(
         { success: false, error: 'Missing required booking fields' },
@@ -46,8 +44,14 @@ export const POST = async (request) => {
       )
     }
 
-    // Check if a booking with this payment reference already exists
-    // Prevents duplicate bookings if the request is sent twice
+    if (!appointmentDate || !appointmentTime) {
+      return NextResponse.json(
+        { success: false, error: 'Appointment date and time are required' },
+        { status: 400 }
+      )
+    }
+
+    // Prevent duplicate bookings
     const existingBooking = await Booking.findOne({ paymentRef })
     if (existingBooking) {
       return NextResponse.json(
@@ -56,53 +60,76 @@ export const POST = async (request) => {
       )
     }
 
-    // Generate OTP for booking verification
-    const otp = generateOTP()
+    const otp          = generateOTP()
     const otpExpiresAt = generateOTPExpiry()
+    const amount       = PRICES[service] || 0
 
-    // Create the confirmed booking document
-    const booking = await Booking.create({
-      email: email.toLowerCase().trim(),
-      name: name.trim(),
-      phone: phone.trim(),
+    // Build the booking document based on service type
+    const bookingData = {
+      email:          email.toLowerCase().trim(),
+      name:           name.trim(),
+      phone:          phone.trim(),
       service,
       appointmentDate,
       appointmentTime,
-      measurementType,
-      measurements: measurements ?? {},
       specialRequests: specialRequests ?? '',
       paymentRef,
-      paymentStatus: 'paid',
+      paymentStatus:  'paid',
+      amount,
       otp,
       otpExpiresAt,
-      otpVerified: false,
-    })
+      otpVerified:    false,
+    }
 
-    // Mark the session as completed
-    // This is what powers the "completed" metric on the dashboard
-    await Session.findOneAndUpdate(
-      { anonymousSessionId },
-      { status: 'completed' }
-    )
+    // Custom outfit specific fields
+    if (service === 'custom_outfit') {
+      bookingData.outfitStyle     = outfitStyle     ?? ''
+      bookingData.measurementType = measurementType ?? null
+      bookingData.measurements    = measurements    ?? {}
+    }
 
-    // Send confirmation email with OTP and booking summary
-    // This is non-blocking — if the email fails, the booking
-    // is still confirmed. The customer can contact the designer directly.
+    // Alteration specific fields
+    if (service === 'alteration') {
+      bookingData.alterationType          = alterationType          ?? ''
+      bookingData.alterationDetails       = alterationDetails       ?? ''
+      bookingData.alterationMeasurements  = alterationMeasurements  ?? {}
+    }
+
+    // Consultation specific fields
+    if (service === 'consultation') {
+      bookingData.consultationFormat = consultationFormat ?? ''
+      bookingData.consultationTopics = consultationTopics ?? ''
+    }
+
+    const booking = await Booking.create(bookingData)
+
+    // Mark session as completed
+    if (anonymousSessionId) {
+      await Session.findOneAndUpdate(
+        { anonymousSessionId },
+        { status: 'completed' }
+      ).catch(() => {})
+    }
+
+    // Send confirmation email — non-blocking
     try {
       await sendConfirmationEmail({
-        email: booking.email,
-        name: booking.name,
+        email:          booking.email,
+        name:           booking.name,
         otp,
+        service:        booking.service,
         bookingDetails: {
-          service: booking.service,
+          service:         booking.service,
+          outfitStyle:     booking.outfitStyle,
           appointmentDate: booking.appointmentDate,
           appointmentTime: booking.appointmentTime,
           measurementType: booking.measurementType,
+          alterationType:  booking.alterationType,
+          consultationFormat: booking.consultationFormat,
         },
       })
     } catch (emailError) {
-      console.error('Confirmation email failed:', emailError)
-      // Do not return an error — booking is confirmed regardless
+      console.error('Confirmation email failed:', emailError.message)
     }
 
     return NextResponse.json(
@@ -111,7 +138,7 @@ export const POST = async (request) => {
     )
 
   } catch (error) {
-    console.error('POST /api/booking error:', error)
+    console.error('POST /api/booking error:', error.message)
     return NextResponse.json(
       { success: false, error: error.message },
       { status: 500 }
