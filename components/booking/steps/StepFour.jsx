@@ -97,7 +97,7 @@ export default function StepFour({
               Your measurements will be taken professionally at the studio on{" "}
               <strong>{formData.appointmentDate}</strong> at{" "}
               <strong>{formData.appointmentTime}</strong>.
-              No action needed here — just continue.
+              No action needed here, just continue.
             </p>
           </div>
         </div>
