@@ -17,10 +17,10 @@ export default function StepFive({
 }) {
 
   const { trackCompleted } = useAnalytics({
-  step: currentStep,
-  anonymousSessionId,
-  email: formData.email,
-})
+    step: currentStep,
+    anonymousSessionId,
+    email: formData.email,
+  })
 
   const [localError, setLocalError] = useState("")
   const [saved, setSaved] = useState(false)
@@ -67,6 +67,9 @@ export default function StepFive({
         const data = await res.json()
         throw new Error(data.error || "Failed to save progress")
       }
+
+      localStorage.setItem("flowtrack_has_booking", "true")
+
 
       setSaved(true)
 
@@ -119,7 +122,7 @@ export default function StepFive({
             className="text-[.8125rem] text-error mt-1 flex items-center gap-1.5"
           >
             <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/>
+              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z" />
             </svg>
             {localError}
           </span>
@@ -127,7 +130,7 @@ export default function StepFive({
         {saved && (
           <span className="text-[.8125rem] text-success mt-1 flex items-center gap-1.5">
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" aria-hidden="true">
-              <polyline points="20 6 9 17 4 12"/>
+              <polyline points="20 6 9 17 4 12" />
             </svg>
             Progress saved — continuing...
           </span>
@@ -137,7 +140,7 @@ export default function StepFive({
       {/* Reassurance */}
       <div className="info-box blue">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" className="shrink-0 mt-0.5" aria-hidden="true">
-          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
         </svg>
         <div>
           <p className="font-semibold mb-1">Your progress is protected</p>
@@ -153,7 +156,7 @@ export default function StepFive({
           aria-label="Go back to measurements"
         >
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" aria-hidden="true">
-            <path d="M19 12H5M12 5l-7 7 7 7"/>
+            <path d="M19 12H5M12 5l-7 7 7 7" />
           </svg>
           Back
         </button>
@@ -166,15 +169,15 @@ export default function StepFive({
           {isSubmitting ? (
             <>
               <svg className="w-4 h-4 animate-spin" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3" strokeOpacity=".25"/>
-                <path d="M4 12a8 8 0 018-8v8z" fill="currentColor" fillOpacity=".75"/>
+                <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3" strokeOpacity=".25" />
+                <path d="M4 12a8 8 0 018-8v8z" fill="currentColor" fillOpacity=".75" />
               </svg>
               Saving...
             </>
           ) : saved ? (
             <>
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" aria-hidden="true">
-                <polyline points="20 6 9 17 4 12"/>
+                <polyline points="20 6 9 17 4 12" />
               </svg>
               Saved
             </>
@@ -182,7 +185,7 @@ export default function StepFive({
             <>
               Save and continue
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" aria-hidden="true">
-                <path d="M5 12h14M12 5l7 7-7 7"/>
+                <path d="M5 12h14M12 5l7 7-7 7" />
               </svg>
             </>
           )}

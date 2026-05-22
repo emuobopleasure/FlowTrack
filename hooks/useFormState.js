@@ -4,12 +4,14 @@ import { useState } from "react"
 import { v4 as uuidv4 } from "uuid"
 
 const initialFormData = {
-  service: "custom_outfit",
-  appointmentDate: "",
-  appointmentTime: "",
-  measurementType: "",
-  alterationDetails: "",
-  consultationFormat: "",
+  service:              "custom_outfit",
+  appointmentDate:      "",
+  appointmentTime:      "",
+  measurementType:      "",
+  alterationType:       "",
+  alterationDetails:    "",
+  consultationFormat:   "",
+  consultationTopics:   "",
   measurements: {
     chest: "", waist: "", hips: "",
     shoulder: "", height: "", sleeve: "", notes: "",
@@ -18,11 +20,11 @@ const initialFormData = {
     chest: "", waist: "", hips: "",
     shoulder: "", height: "", sleeve: "", notes: "",
   },
-  outfitStyle: "",
-  email: "",
-  name: "",
-  phone: "",
-  specialRequests: "",
+  outfitStyle:      "",
+  email:            "",
+  name:             "",
+  phone:            "",
+  specialRequests:  "",
 }
 
 export const useFormState = () => {
@@ -54,11 +56,11 @@ export const useFormState = () => {
   const saveProgress = async (step) => {
     try {
       await fetch("/api/session", {
-        method: "PATCH",
+        method:  "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
+        body:    JSON.stringify({
           anonymousSessionId,
-          email: formData.email || null,
+          email:       formData.email || null,
           currentStep: step,
           formData,
         }),
@@ -84,6 +86,17 @@ export const useFormState = () => {
     setCurrentStep(step)
   }
 
+  /**
+   * restoreSession
+   * Called when resuming a saved booking.
+   * Merges saved formData with initialFormData as a safety net
+   * in case any fields are missing from the saved session.
+   */
+  const restoreSession = (savedFormData, savedStep) => {
+    setFormData({ ...initialFormData, ...savedFormData })
+    setCurrentStep(savedStep || 1)
+  }
+
   const resetForm = () => {
     setFormData(initialFormData)
     setCurrentStep(1)
@@ -99,6 +112,7 @@ export const useFormState = () => {
     nextStep,
     prevStep,
     resetToStep,
+    restoreSession,
     resetForm,
     isSubmitting,
     setIsSubmitting,
