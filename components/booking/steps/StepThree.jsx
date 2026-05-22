@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import { useAnalytics } from "@/hooks/useAnalytics"
 
 const outfits = [
   {
@@ -49,13 +50,20 @@ const outfits = [
 
 const CheckIcon = () => (
   <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3" strokeLinecap="round" aria-hidden="true">
-    <polyline points="20 6 9 17 4 12"/>
+    <polyline points="20 6 9 17 4 12" />
   </svg>
 )
 
 export default function StepThree({
-  formData, updateFormData, nextStep, prevStep, currentStep, totalSteps,
+  formData, updateFormData, nextStep, prevStep, currentStep, totalSteps, anonymousSessionId
 }) {
+
+  const { trackCompleted } = useAnalytics({
+    step: currentStep,
+    anonymousSessionId,
+    email: formData.email,
+  })
+
   const [view, setView] = useState("grid")
   const selected = formData.outfitStyle || ""
 
@@ -84,10 +92,10 @@ export default function StepThree({
             aria-pressed={view === "grid"}
           >
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
-              <rect x="3" y="3" width="7" height="7" rx="1"/>
-              <rect x="14" y="3" width="7" height="7" rx="1"/>
-              <rect x="3" y="14" width="7" height="7" rx="1"/>
-              <rect x="14" y="14" width="7" height="7" rx="1"/>
+              <rect x="3" y="3" width="7" height="7" rx="1" />
+              <rect x="14" y="3" width="7" height="7" rx="1" />
+              <rect x="3" y="14" width="7" height="7" rx="1" />
+              <rect x="14" y="14" width="7" height="7" rx="1" />
             </svg>
           </button>
           <button
@@ -97,12 +105,12 @@ export default function StepThree({
             aria-pressed={view === "list"}
           >
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
-              <line x1="8" y1="6" x2="21" y2="6"/>
-              <line x1="8" y1="12" x2="21" y2="12"/>
-              <line x1="8" y1="18" x2="21" y2="18"/>
-              <line x1="3" y1="6" x2="3.01" y2="6"/>
-              <line x1="3" y1="12" x2="3.01" y2="12"/>
-              <line x1="3" y1="18" x2="3.01" y2="18"/>
+              <line x1="8" y1="6" x2="21" y2="6" />
+              <line x1="8" y1="12" x2="21" y2="12" />
+              <line x1="8" y1="18" x2="21" y2="18" />
+              <line x1="3" y1="6" x2="3.01" y2="6" />
+              <line x1="3" y1="12" x2="3.01" y2="12" />
+              <line x1="3" y1="18" x2="3.01" y2="18" />
             </svg>
           </button>
         </div>
@@ -231,7 +239,7 @@ export default function StepThree({
                   {isSelected && (
                     <div className="flex items-center gap-2 text-[.8125rem] font-semibold text-navy">
                       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" aria-hidden="true">
-                        <polyline points="20 6 9 17 4 12"/>
+                        <polyline points="20 6 9 17 4 12" />
                       </svg>
                       Selected
                     </div>
@@ -246,18 +254,23 @@ export default function StepThree({
       <div className="step-actions">
         <button className="btn-back" onClick={prevStep}>
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" aria-hidden="true">
-            <path d="M19 12H5M12 5l-7 7 7 7"/>
+            <path d="M19 12H5M12 5l-7 7 7 7" />
           </svg>
           Back
         </button>
         <button
           className="btn-continue"
-          onClick={nextStep}
+          onClick={
+            () => {
+              trackCompleted()
+              nextStep()
+            }
+          }
           disabled={!selected}
         >
           Continue
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" aria-hidden="true">
-            <path d="M5 12h14M12 5l7 7-7 7"/>
+            <path d="M5 12h14M12 5l7 7-7 7" />
           </svg>
         </button>
       </div>

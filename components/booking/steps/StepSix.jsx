@@ -1,6 +1,14 @@
 "use client"
+import { useAnalytics } from "@/hooks/useAnalytics"
 
-export default function StepSix({ formData, updateFormData, nextStep, prevStep }) {
+export default function StepSix({ formData, updateFormData, nextStep, prevStep, currentStep, totalSteps, anonymousSessionId }) {
+
+  const { trackCompleted } = useAnalytics({
+    step: currentStep,
+    anonymousSessionId,
+    email: formData.email,
+  })
+
   const canContinue = formData.name?.trim() && formData.phone?.trim()
 
   return (
@@ -51,19 +59,22 @@ export default function StepSix({ formData, updateFormData, nextStep, prevStep }
       <div className="step-actions">
         <button className="btn-back" onClick={prevStep} aria-label="Go back to save progress">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" aria-hidden="true">
-            <path d="M19 12H5M12 5l-7 7 7 7"/>
+            <path d="M19 12H5M12 5l-7 7 7 7" />
           </svg>
           Back
         </button>
         <button
           className="btn-continue"
-          onClick={nextStep}
+          onClick={() => {
+            trackCompleted()
+            nextStep()
+          }}
           disabled={!canContinue}
           aria-label="Review your booking"
         >
           Review booking
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" aria-hidden="true">
-            <path d="M5 12h14M12 5l7 7-7 7"/>
+            <path d="M5 12h14M12 5l7 7-7 7" />
           </svg>
         </button>
       </div>

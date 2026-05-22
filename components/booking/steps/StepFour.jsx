@@ -1,20 +1,21 @@
 "use client"
 
 import { useState } from "react"
+import { useAnalytics } from "@/hooks/useAnalytics"
 
 const customFields = [
-  { id: "chest",    label: "Chest (inches)",         placeholder: "e.g. 38" },
-  { id: "waist",    label: "Waist (inches)",          placeholder: "e.g. 32" },
-  { id: "hips",     label: "Hips (inches)",           placeholder: "e.g. 40" },
+  { id: "chest", label: "Chest (inches)", placeholder: "e.g. 38" },
+  { id: "waist", label: "Waist (inches)", placeholder: "e.g. 32" },
+  { id: "hips", label: "Hips (inches)", placeholder: "e.g. 40" },
   { id: "shoulder", label: "Shoulder width (inches)", placeholder: "e.g. 18" },
-  { id: "height",   label: "Height (inches)",         placeholder: "e.g. 70" },
-  { id: "sleeve",   label: "Sleeve length (inches)",  placeholder: "e.g. 25" },
+  { id: "height", label: "Height (inches)", placeholder: "e.g. 70" },
+  { id: "sleeve", label: "Sleeve length (inches)", placeholder: "e.g. 25" },
 ]
 
 const alterationFields = [
-  { id: "chest",  label: "Chest (inches)",  placeholder: "e.g. 38" },
-  { id: "waist",  label: "Waist (inches)",  placeholder: "e.g. 32" },
-  { id: "hips",   label: "Hips (inches)",   placeholder: "e.g. 40" },
+  { id: "chest", label: "Chest (inches)", placeholder: "e.g. 38" },
+  { id: "waist", label: "Waist (inches)", placeholder: "e.g. 32" },
+  { id: "hips", label: "Hips (inches)", placeholder: "e.g. 40" },
   { id: "height", label: "Height (inches)", placeholder: "e.g. 70" },
 ]
 
@@ -27,11 +28,19 @@ export default function StepFour({
   currentStep,
   totalSteps,
   alterationMode = false,
+  anonymousSessionId,
 }) {
+
+  const { trackCompleted } = useAnalytics({
+    step: currentStep,
+    anonymousSessionId,
+    email: formData.email,
+  })
+
   const [errors, setErrors] = useState({})
 
   const isPhysical = formData.measurementType === "physical"
-  const isSelf     = formData.measurementType === "self"
+  const isSelf = formData.measurementType === "self"
 
   const measurements = alterationMode
     ? (formData.alterationMeasurements || {})
@@ -67,6 +76,8 @@ export default function StepFour({
       }
       return
     }
+    trackCompleted()
+
     nextStep()
   }
 
@@ -81,15 +92,15 @@ export default function StepFour({
           {isPhysical && !alterationMode
             ? "You chose to come in for a fitting. Your measurements will be taken at the studio."
             : alterationMode
-            ? "Enter your current measurements in inches so we can alter the garment correctly."
-            : "Enter your measurements in inches. Use a flexible tape measure for accuracy."}
+              ? "Enter your current measurements in inches so we can alter the garment correctly."
+              : "Enter your measurements in inches. Use a flexible tape measure for accuracy."}
         </p>
       </div>
 
       {isPhysical && !alterationMode ? (
         <div className="info-box blue" role="status">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" className="shrink-0 mt-0.5" aria-hidden="true">
-            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
           </svg>
           <div>
             <p className="font-semibold mb-1">Studio fitting confirmed</p>
@@ -105,9 +116,9 @@ export default function StepFour({
         <>
           <div className="info-box blue mb-5">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" className="shrink-0 mt-0.5" aria-hidden="true">
-              <circle cx="12" cy="12" r="10"/>
-              <line x1="12" y1="8" x2="12" y2="12"/>
-              <line x1="12" y1="16" x2="12.01" y2="16"/>
+              <circle cx="12" cy="12" r="10" />
+              <line x1="12" y1="8" x2="12" y2="12" />
+              <line x1="12" y1="16" x2="12.01" y2="16" />
             </svg>
             <span>
               All fields marked * are required. Use a flexible measuring
@@ -167,14 +178,14 @@ export default function StepFour({
       <div className="step-actions">
         <button className="btn-back" onClick={prevStep} aria-label="Go back">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" aria-hidden="true">
-            <path d="M19 12H5M12 5l-7 7 7 7"/>
+            <path d="M19 12H5M12 5l-7 7 7 7" />
           </svg>
           Back
         </button>
         <button className="btn-continue" onClick={handleContinue} aria-label="Continue">
           Continue
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" aria-hidden="true">
-            <path d="M5 12h14M12 5l7 7-7 7"/>
+            <path d="M5 12h14M12 5l7 7-7 7" />
           </svg>
         </button>
       </div>

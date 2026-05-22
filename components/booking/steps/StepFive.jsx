@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import { useAnalytics } from "@/hooks/useAnalytics"
 
 export default function StepFive({
   formData,
@@ -14,6 +15,13 @@ export default function StepFive({
   currentStep,
   totalSteps,
 }) {
+
+  const { trackCompleted } = useAnalytics({
+  step: currentStep,
+  anonymousSessionId,
+  email: formData.email,
+})
+
   const [localError, setLocalError] = useState("")
   const [saved, setSaved] = useState(false)
 
@@ -61,6 +69,8 @@ export default function StepFive({
       }
 
       setSaved(true)
+
+      trackCompleted()
 
       // Short delay so the user sees the saved confirmation
       setTimeout(() => {

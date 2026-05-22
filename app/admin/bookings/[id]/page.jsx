@@ -35,10 +35,11 @@ export default async function BookingDetailPage({ params }) {
     const session = await auth()
     if (!session) redirect("/admin/login")
 
+    const { id } = await params
+
     await connectDB()
 
-    const booking = await Booking.findById(params.id).lean()
-    if (!booking) notFound()
+    const booking = await Booking.findById(id).lean()
 
     const b = JSON.parse(JSON.stringify(booking))
 

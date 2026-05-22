@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
+import { useAnalytics } from "@/hooks/useAnalytics"
 
 const SERVICE_LABELS = {
     custom_outfit: "Custom Outfit",
@@ -162,9 +163,17 @@ export default function StepSeven({
     anonymousSessionId,
     isSubmitting,
     setIsSubmitting,
+    setError,
     currentStep,
     totalSteps,
 }) {
+
+    const { trackCompleted } = useAnalytics({
+        step: currentStep,
+        anonymousSessionId,
+        email: formData.email,
+    })
+
     const router = useRouter()
     const price = PRICES[formData.service] || 45000
 
@@ -244,7 +253,7 @@ export default function StepSeven({
                     .then((res) => res.json())
                     .then((bookData) => {
                         if (!bookData.success) throw new Error("Booking confirmation failed")
-
+                        trackCompleted()
                         // Step 3 — redirect
                         router.push("/confirmation")
                     })

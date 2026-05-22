@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import { useAnalytics } from "@/hooks/useAnalytics"
 
 const times = [
   "9:00 AM", "10:00 AM", "11:00 AM",
@@ -14,8 +15,8 @@ const measurementOptions = [
     desc: "Visit the studio on your appointment day, measurements taken professionally",
     icon: (
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/>
-        <circle cx="9" cy="7" r="4"/>
+        <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" />
+        <circle cx="9" cy="7" r="4" />
       </svg>
     ),
   },
@@ -25,7 +26,7 @@ const measurementOptions = [
     desc: "Fill in your measurements yourself, no visit required",
     icon: (
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/>
+        <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" />
       </svg>
     ),
   },
@@ -33,15 +34,22 @@ const measurementOptions = [
 
 const CheckIcon = () => (
   <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3" strokeLinecap="round" aria-hidden="true">
-    <polyline points="20 6 9 17 4 12"/>
+    <polyline points="20 6 9 17 4 12" />
   </svg>
 )
 
 const today = new Date().toISOString().split("T")[0]
 
 export default function StepTwo({
-  formData, updateFormData, nextStep, prevStep, currentStep, totalSteps,
+  formData, updateFormData, nextStep, prevStep, currentStep, totalSteps, anonymousSessionId
 }) {
+
+  const { trackCompleted } = useAnalytics({
+    step: currentStep,
+    anonymousSessionId,
+    email: formData.email,
+  })
+
   const [errors, setErrors] = useState({})
   const selected = formData.measurementType || ""
 
@@ -55,6 +63,8 @@ export default function StepTwo({
   }
 
   const handleContinue = () => {
+    trackCompleted()
+
     if (validate()) nextStep()
   }
 
@@ -149,14 +159,14 @@ export default function StepTwo({
       <div className="step-actions">
         <button className="btn-back" onClick={prevStep} aria-label="Go back to service selection">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" aria-hidden="true">
-            <path d="M19 12H5M12 5l-7 7 7 7"/>
+            <path d="M19 12H5M12 5l-7 7 7 7" />
           </svg>
           Back
         </button>
         <button className="btn-continue" onClick={handleContinue} aria-label="Continue">
           Continue
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" aria-hidden="true">
-            <path d="M5 12h14M12 5l7 7-7 7"/>
+            <path d="M5 12h14M12 5l7 7-7 7" />
           </svg>
         </button>
       </div>

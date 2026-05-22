@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import { useAnalytics } from "@/hooks/useAnalytics"
 
 const times = [
     "9:00 AM", "10:00 AM", "11:00 AM",
@@ -23,8 +24,15 @@ const CheckIcon = () => (
 )
 
 export default function StepTwoAlteration({
-    formData, updateFormData, nextStep, prevStep, currentStep, totalSteps,
+    formData, updateFormData, nextStep, prevStep, currentStep, totalSteps, anonymousSessionId,
 }) {
+
+    const { trackCompleted } = useAnalytics({
+        step: currentStep,
+        anonymousSessionId,
+        email: formData.email,
+    })
+
     const [errors, setErrors] = useState({})
 
     // use selectedType consistently — this was the bug
@@ -49,6 +57,8 @@ export default function StepTwoAlteration({
             if (el) el.scrollIntoView({ behavior: "smooth", block: "center" })
             return
         }
+
+        trackCompleted()
         nextStep()
     }
 
