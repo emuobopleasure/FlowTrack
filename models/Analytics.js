@@ -41,12 +41,12 @@ const analyticsSchema = new Schema(
       type: Number,
       required: true,
       min: 1,
-      max: 6,
+      max: 7,
     },
     event: {
       type: String,
       enum: {
-        values: ['entered', 'exited', 'backed', 'abandoned', 'completed'],
+        values: ['entered', 'abandoned', 'completed'],
         message: '{VALUE} is not a valid analytics event',
       },
       required: true,
@@ -73,5 +73,7 @@ analyticsSchema.index({ step: 1, event: 1 })
 analyticsSchema.index({ anonymousSessionId: 1 })
 analyticsSchema.index({ email: 1 })
 
-export default mongoose.models.Analytics ||
-  mongoose.model('Analytics', analyticsSchema)
+// Delete cached model so schema changes are always picked up
+delete mongoose.models.Analytics
+
+export default mongoose.model('Analytics', analyticsSchema)

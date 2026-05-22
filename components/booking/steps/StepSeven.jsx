@@ -168,10 +168,13 @@ export default function StepSeven({
     totalSteps,
 }) {
 
+    console.log("StepSeven anonymousSessionId:", anonymousSessionId)
+
     const { trackCompleted } = useAnalytics({
         step: currentStep,
         anonymousSessionId,
         email: formData.email,
+        
     })
 
     const router = useRouter()
