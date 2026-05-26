@@ -35,10 +35,10 @@ export default function ExitModal({ isOpen, onClose }) {
           Your progress is saved automatically. Come back anytime and enter your email to continue from where you left off.
         </div>
         <div className="modal-actions">
-          <button className="modal-stay" onClick={onClose}>
+          <button className="modal-stay rounded-full" onClick={onClose}>
             Stay and continue
           </button>
-          <button className="modal-leave" onClick={() => router.push("/")}>
+          <button className="modal-leave rounded-full" onClick={() => router.push("/")}>
             Yes, exit
           </button>
         </div>

@@ -25,8 +25,8 @@ export default function ProgressBar({ currentStep, totalSteps, flow }) {
 
   return (
     <div className="w-full" role="navigation" aria-label="Booking progress">
-      {/* Dots and lines */}
-      <div className="flex items-center justify-between">
+      {/* Unified Progress Track Row */}
+      <div className="flex items-start justify-between relative w-full">
         {labels.map((label, i) => {
           const stepNum = i + 1
           const isDone = stepNum < currentStep
@@ -34,34 +34,39 @@ export default function ProgressBar({ currentStep, totalSteps, flow }) {
           const isLast = i === labels.length - 1
 
           return (
-            <div key={label + i} className={`flex items-center ${!isLast ? "flex-1" : ""}`}>
-              {/* Dot */}
+            <div 
+              key={label + i} 
+              className={`flex flex-col items-center relative ${!isLast ? "flex-1" : "flex-grow-0"}`}
+            >
+              {/* Connector Line — Absolute positioning keeps it from pushing text or dots off-center */}
+              {!isLast && (
+                <div 
+                  className={`p-line absolute h-[2px] top-3 left-[calc(50%+12px)] right-[calc(-50%+12px)] z-0 ${
+                    isDone ? "done" : "upcoming"
+                  }`} 
+                />
+              )}
+
+              {/* Step Dot Circle Indicator */}
               <div
-                className={`p-dot !w-6 !h-6 !text-[10px] ${isDone ? "done" : isActive ? "active" : "upcoming"}`}
+                className={`p-dot !w-6 !h-6 !text-[10px] flex items-center justify-center relative z-10 shrink-0 ${
+                  isDone ? "done" : isActive ? "active" : "upcoming"
+                }`}
               >
                 {isDone ? <CheckIcon /> : stepNum}
               </div>
 
-              {/* Line */}
-              {!isLast && (
-                <div className={`p-line mx-2 ${isDone ? "done" : "upcoming"}`} />
-              )}
+              {/* Label Component — Centered, matching typography, visible across tablet & desktop */}
+              <span 
+                className={`text-[10px] md:text-[11px] font-bold uppercase tracking-tight mt-2 text-center whitespace-nowrap px-1 z-10 block transition-colors duration-200 ${
+                  stepNum <= currentStep ? "text-navy" : "text-slate-400"
+                }`}
+              >
+                {label}
+              </span>
             </div>
           )
         })}
-      </div>
-
-      {/* Labels - only visible on larger screens */}
-      <div className="hidden lg:flex justify-between mt-2 px-1">
-        {labels.map((label, i) => (
-          <span 
-            key={label + i} 
-            className={`text-[11px] font-bold uppercase tracking-tight ${i + 1 <= currentStep ? "text-navy" : "text-slate-400"}`}
-            style={{ width: '40px', textAlign: 'center' }}
-          >
-            {label}
-          </span>
-        ))}
       </div>
     </div>
   )
