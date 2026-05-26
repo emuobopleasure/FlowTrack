@@ -6,8 +6,7 @@ const services = [
   {
     id: "custom_outfit",
     name: "Custom Outfit",
-    desc: "Original piece built to your measurements — agbada, senator, kaftan and more",
-    badge: "Most booked",
+    desc: "Original piece built to your measurements: agbada, senator, kaftan and more",
     featured: true,
     icon: (
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
@@ -18,7 +17,7 @@ const services = [
   {
     id: "alteration",
     name: "Alteration",
-    desc: "Expert adjustments to an existing garment — resizing, hemming, restructuring",
+    desc: "Expert adjustments to male attire: resizing, hemming, restructuring",
     badge: null,
     featured: false,
     icon: (
