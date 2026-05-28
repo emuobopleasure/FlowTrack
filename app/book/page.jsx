@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import BookingLayout from "@/components/booking/BookingLayout"
 import StepOne from "@/components/booking/steps/StepOne"
 import StepTwo from "@/components/booking/steps/StepTwo"
@@ -41,6 +41,15 @@ export default function BookPage() {
     setError,
     restoreSession,
   } = useFormState()
+
+  useEffect(() => {
+    if (!anonymousSessionId) return
+    fetch("/api/session", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ anonymousSessionId }),
+    }).catch(() => { })
+  }, [anonymousSessionId])
 
 
   // Show resume modal on step 1 by default
