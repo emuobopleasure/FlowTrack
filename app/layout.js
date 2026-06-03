@@ -1,6 +1,7 @@
 import Script from "next/script"
 import { Inter } from "next/font/google"
 import "./globals.css"
+import { Analytics } from "@vercel/analytics/react"
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" })
 
@@ -22,6 +23,7 @@ export default function RootLayout({ children }) {
           src="https://js.paystack.co/v1/inline.js"
           strategy="beforeInteractive"
         />
+        <Analytics/>
       </body>
     </html>
   )
