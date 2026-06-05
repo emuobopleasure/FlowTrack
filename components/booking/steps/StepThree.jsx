@@ -2,6 +2,7 @@
 
 import { useState } from "react"
 import { useAnalytics } from "@/hooks/useAnalytics"
+import Image from "next/image"
 
 const outfits = [
   {
@@ -137,11 +138,13 @@ export default function StepThree({
                 }}
                 aria-label={`${outfit.name} — ${outfit.type}`}
               >
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={outfit.image}
+                {/* STYLING UNTOUCHED: Kept your exact className config, added clean aspect properties to make it work fast */}
+                <Image
+                  src={`/${outfit.image}`}
                   alt={outfit.name}
                   className="outfit-grid-img"
+                  width={400}
+                  height={300}
                   loading="lazy"
                 />
                 <div className="outfit-grid-label">
@@ -194,10 +197,12 @@ export default function StepThree({
               >
                 {/* Image — full width on mobile, fixed width on desktop */}
                 <div className="w-full sm:w-[160px] h-[220px] sm:h-auto shrink-0 overflow-hidden bg-[#EEF3FB]">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src={outfit.image}
+                  {/* STYLING UNTOUCHED: Upgraded this to NextImage too, retaining your scaling inline modifications */}
+                  <Image
+                    src={`/${outfit.image}`}
                     alt={outfit.name}
+                    width={160}
+                    height={220}
                     loading="lazy"
                     className="w-full h-full object-cover object-top transition-transform duration-500"
                     style={{ transform: isSelected ? "scale(1.03)" : "scale(1)" }}

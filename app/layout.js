@@ -21,10 +21,10 @@ export default function RootLayout({ children }) {
         {children}
         <Script
           src="https://js.paystack.co/v1/inline.js"
-          strategy="beforeInteractive"
+          strategy="lazyOnload"
         />
         <Analytics/>
       </body>
     </html>
-  )
+  ) 
 }
