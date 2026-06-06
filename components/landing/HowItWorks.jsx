@@ -29,7 +29,7 @@ const HowItWorks = () => {
             <div className="container">
                 {/* Header */}
                 <div className="mb-14">
-                  <span className="text-navy text-sm font-semibold uppercase tracking-widest">
+                    <span className="text-navy text-sm font-semibold uppercase tracking-widest">
                         Simple Process
                     </span>
                     <h2 id="how-heading" className="text-4xl sm:text-5xl font-bold text-text-primary mt-3 leading-tight">
@@ -43,7 +43,10 @@ const HowItWorks = () => {
                         <div key={step.number} className="flex flex-col gap-5">
                             {/* Step number */}
                             <div className="flex items-center gap-4">
-                                <span className="text-5xl font-black text-navy/12 leading-none select-none">
+                                <span
+                                    className="text-5xl font-black text-navy/20 leading-none select-none"
+                                    aria-hidden="true"
+                                >
                                     {step.number}
                                 </span>
                                 {/* Connector line — only between steps */}
