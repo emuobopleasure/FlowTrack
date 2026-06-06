@@ -44,7 +44,7 @@ const HowItWorks = () => {
                             {/* Step number */}
                             <div className="flex items-center gap-4">
                                 <span
-                                    className="text-5xl font-black text-navy/20 leading-none select-none"
+                                    className="text-5xl font-black text-slate-400 leading-none select-none"
                                     aria-hidden="true"
                                 >
                                     {step.number}
@@ -55,7 +55,7 @@ const HowItWorks = () => {
                                 )}
                             </div>
                             <h3 className="text-xl font-bold text-text-primary">{step.title}</h3>
-                            <p className="text-text-secondary text-sm leading-relaxed">{step.description}</p>
+                            <p className="text-slate-700 text-sm leading-relaxed">{step.description}</p>
                         </div>
                     ))}
                 </div>
