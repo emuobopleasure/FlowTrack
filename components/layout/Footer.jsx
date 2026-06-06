@@ -30,7 +30,7 @@ export default function Footer() {
               </span>
               <span className="font-bold text-lg tracking-tight">FlowTrack</span>
             </div>
-            <p className="text-white/60 text-sm max-w-xs leading-relaxed">
+            <p className="text-white text-sm max-w-xs leading-relaxed">
               Book your custom outfit online. No WhatsApp back-and-forth.
             </p>
           </div>
@@ -42,7 +42,7 @@ export default function Footer() {
                 <li key={link.href}>
                   <Link
                     href={link.href}
-                    className="text-white/60 hover:text-white text-sm font-medium transition-colors duration-200"
+                    className="text-white hover:text-white/60 text-sm font-medium transition-colors duration-200"
                   >
                     {link.label}
                   </Link>
@@ -53,8 +53,8 @@ export default function Footer() {
         </div>
 
         {/* Bottom bar */}
-        <div className="mt-10 pt-6 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-3 text-white/40 text-xs">
-          <span>© {new Date().getFullYear()} FlowTrack. Built by <a target="_blank" href="https://emuobopleasure.vercel.app/" className="text-white/60 hover:text-white underline"> Emuobonuvie Pleasure. </a></span>
+        <div className="mt-10 pt-6 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-3 text-white text-xs">
+          <span>© {new Date().getFullYear()} FlowTrack.</span>
           <span>Nigerian Men&apos;s Fashion Booking Platform</span>
         </div>
       </div>

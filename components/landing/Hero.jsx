@@ -73,7 +73,7 @@ const Hero = () => {
                     ].map((stat) => (
                         <div key={stat.label} className="flex flex-col">
                             <span className="text-xl sm:text-2xl font-bold text-[#1B3A6B]">{stat.number}</span>
-                            <span className="text-xs text-[#94A3B8] font-medium mt-0.5 leading-tight">{stat.label}</span>
+                            <span className="text-xs text-gray-500 font-medium mt-0.5 leading-tight">{stat.label}</span>
                         </div>
                     ))}
                 </div>
